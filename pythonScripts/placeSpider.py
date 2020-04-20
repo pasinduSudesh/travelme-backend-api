@@ -24,6 +24,7 @@ class GoogleSpider(scrapy.Spider):
         place_name = main_divs.css('h3::text').extract()[1::2]
         number_of_revewis = main_divs.css('.styleguide-bubble-rating-BubbleRatingWithReviewCount__reviewCount--37tMc::text').extract()
         place_review_link = main_divs.css('::attr(href)').extract()[::4]
+        img = response.css('source::attr(srcset)').extract()
 
         data = {}
         data['place-count'] = len(place_title)
@@ -35,7 +36,8 @@ class GoogleSpider(scrapy.Spider):
                 'place-name': place_name[x],
                 'place-title': place_title[x],
                 'no-of-reviews': number_of_revewis[x],
-                'review-link': self.allowed_domains[0] + place_review_link[x]
+                'review-link': self.allowed_domains[0] + place_review_link[x],
+                'img': img[x].split(",")[2].split(" ")[1]
             })
             data['links'].append(self.allowed_domains[0] + place_review_link[x])
         
