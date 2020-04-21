@@ -74,7 +74,7 @@ class ReviewSpider(scrapy.Spider):
                     resultjson = {}
                     resultjson['result'] = self.results
                     # resultjson['review-count'] = len(self.results)
-                    resultjson['last-modified'] = {"date": datetime.now().strftime("%m/%d/%Y"),"time":datetime.now().strftime("%H:%M:%S")}
+                    resultjson['last_modified'] = {"date": datetime.now().strftime("%m/%d/%Y"),"time":datetime.now().strftime("%H:%M:%S")}
                     resultjson['STATUS'] = "SUCCESS"
                     json.dump(resultjson, output)
 

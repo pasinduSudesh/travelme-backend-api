@@ -5,8 +5,8 @@ const fs = require('fs')
 exports.savePlaceDetails = function( callback){
     var rd = fs.readFileSync('crawlerResults/placeSpiderResults.json')
     var jsonBody = JSON.parse(rd);
-    console.log(jsonBody['last-modified']['time'])
-    var ty = Date.parse(jsonBody['last-modified']['date']+ " " +jsonBody['last-modified']['time'])
+    console.log(jsonBody['last_modified']['time'])
+    var ty = Date.parse(jsonBody['last_modified']['date']+ " " +jsonBody['last_modified']['time'])
     console.log(ty)
     console.log(Date.parse(new Date()))
 
@@ -21,9 +21,9 @@ exports.savePlaceDetails = function( callback){
             // i++
             // var usersRef = ref.child('locations')
             usersRef.push({
-                location_name: value['place-name'],
-                place_title: value['place-title'],
-                review_link: value['review-link']
+                location_name: value['place_name'],
+                place_title: value['place_title'],
+                review_link: value['review_link']
             });
         });
         callback(false,true)
