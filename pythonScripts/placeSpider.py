@@ -9,7 +9,7 @@ from datetime import datetime
 class GoogleSpider(scrapy.Spider):
     name = "place"
     allowed_domains = ['https://www.tripadvisor.com']
-    start_urls = ['https://www.tripadvisor.com/Attractions-g304140-Activities-Polonnaruwa_North_Central_Province.html']
+    start_urls = []
 
 
     def __init__(self, urls):
