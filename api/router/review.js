@@ -2,6 +2,8 @@ const express = require('express');
 const fs  = require('fs')
 const router = express.Router();
 
+let {PythonShell} = require('python-shell')
+
 var spider = require('../models/spider');
 var searchResult = require('../models/customeSearch');
 
@@ -10,9 +12,31 @@ var searchResult = require('../models/customeSearch');
 router.get('/',function(req,res,next){
    
     
-    let rawdata = fs.readFileSync('crawlerResults/reviewSpiderResults.json');
-    let places = JSON.parse(rawdata);
-    res.status(200).json(places)
+    let options = {
+         // get print results in real-time
+        scriptPath: 'pythonScripts',
+        args: ["scrapy"]
+      };
+      PythonShell.run('testPython.py', options, function (err, results) {
+        if (err){
+           res.status(500).json({
+               "err":err
+           });
+           
+        }else{
+            res.status(200).json({
+                "ddd":results
+            });
+    
+        }       
+        
+      });
+
+    // let rawdata = fs.readFileSync('crawlerResults/reviewSpiderResults.json');
+    // let places = JSON.parse(rawdata);
+    // res.status(200).json(places)
+
+
     
     // var st = JSON.parse(file)		
 })
