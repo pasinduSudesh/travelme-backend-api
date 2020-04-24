@@ -1,70 +1,75 @@
 var fs = require('fs')
 let {PythonShell} = require('python-shell')
 
-exports.runReviewSpider = function(url,callback){
-
-    if(typeof(url) == "object"){
-
-        var urlString = ""
-        if(url.length>1){
-            urlString += url[0]
-            for (var i=1;i<url.length;i++){
-                urlString += ","+url[i]
-            }
-        }else if (url.length == 1){
-            urlString = url[0]
+exports.runReviewSpider = function(url){
+    //run review sopider
+    //input urls as a list
+    return new Promise(async (resolve,reject)=>{
+        try{
+            const urlString = await urlToString(url);
+            const spider = await runSpider('reviewSpiderRunner.py',urlString);
+            resolve(spider)
         }
+        catch{
+            reject(new Error('Error when running spider'))
+        }
+    });
     
-        let options = {
-            mode: 'text',
-            pythonOptions: ['-u'], // get print results in real-time
-            scriptPath: 'pythonScripts',
-            args: [urlString]
-          };
-          PythonShell.run('reviewSpiderRunner.py', options, function (err, results) {
-            if (err){
-                console.log(err);
-                callback(err,false);
-            }else{
-                callback(null,true);
-            }       
-            
-          });
-
-    }else{
-        callback("Wrong input type. Input must be object", false)
-    }
 }
 
-
-exports.runPlaceSpider = function(url,callback){
-    if(typeof(url) == "object"){
-        var urlString = ""
-        if(url.length>1){
-            urlString += url[0]
-            for (var i=1;i<url.length;i++){
-                urlString += ","+url[i]
-            }
-        }else if (url.length == 1){
-            urlString = url[0]
+exports.runPlaceSpider =  function(url){   
+    //reun place spider
+    //input urls as a list
+    return new Promise(async (resolve,reject)=>{
+        try{
+            const urlString = await urlToString(url)
+            const spider = await runSpider('placeSpiderRunner.py',urlString);
+            resolve(spider)
         }
+        catch{
+            reject(new Error('Error when running spider'))
+        }
+    });
+}
 
-        let options = {
-            mode: 'text',
-            pythonPath: 'D:\home\python364x86',
-            pythonOptions: ['-u'], // get print results in real-time
-            scriptPath: 'pythonScripts',
-            args: [urlString]
-          };
-          PythonShell.run('placeSpiderRunner.py', options, function (err, results) {
-            if (err){
-                console.log(err);
-                callback(err,false);
-            }else{
-                console.log(results)
-                callback(false,true);
-            }       
+function urlToString(url){
+    //return a string from url object
+    return new Promise((resolve,reject)=>{
+        if(typeof(url) == "object"){
+            var urlString = ""
+            if(url.length>1){
+                urlString += url[0]
+                for (var i=1;i<url.length;i++){
+                    urlString += ","+url[i]
+                }
+            }else if (url.length == 1){
+                urlString = url[0]
+            }
+            resolve(urlString)
+        }else{
+            reject(new Error('URL must include in a list'))
+        }
+    });
+}
+
+function runSpider(spiderRunner,urlString){
+    //run python script for run crawler
+    
+    let options = {
             
+        pythonOptions: ['-u'], 
+        scriptPath: 'pythonScripts',
+        args: [urlString]
+    };
+    return new Promise((resolve,reject)=>{
+        PythonShell.run(spiderRunner, options, function (err, results) {
+            if(err){
+                reject(new Error(err))
+            }else{
+                resolve(true)
+            }
         });
-    }
+    });
+
+
 }

@@ -27,7 +27,7 @@ class GoogleSpider(scrapy.Spider):
         img = response.css('source::attr(srcset)').extract()[-10::]
 
         data = {}
-        data['place-count'] = len(place_title)
+        data['place_count'] = len(place_title)
         data['places'] = []
         data['links']  = []
 

@@ -21,7 +21,8 @@
   "license": "ISC",
   "nodemonConfig": {
     "ignore": [
-      "crawlerResults/reviewSpiderResults.json"
+      "crawlerResults/reviewSpiderResults.json",
+      "crawlerResults/placeSpiderResults.json"
     ]
   }
 }

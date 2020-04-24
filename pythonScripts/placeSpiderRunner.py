@@ -1,5 +1,9 @@
-import sys 
+import os
+import sys, os.path, io 
 import time
+
+# sys.path.append('D:/home/python364x86/Lib/site-packages')
+
 from twisted.internet import reactor
 import scrapy
 from scrapy.crawler import CrawlerRunner
