@@ -51,6 +51,7 @@ exports.runPlaceSpider = function(url,callback){
 
         let options = {
             mode: 'text',
+            pythonPath: 'D:\home\python364x86',
             pythonOptions: ['-u'], // get print results in real-time
             scriptPath: 'pythonScripts',
             args: [urlString]
