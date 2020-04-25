@@ -3,6 +3,25 @@ const fs = require('fs')
 var data = fs.readFileSync('./api/config/keys.json')
 var config = JSON.parse(data)    
 
+
+// *****************************************************/
+
+exports.googlePlaceAPI = async function(placeName){
+    return new Promise((resolve,reject)=>{
+        var PLACE_API_KEY = config['PLACE_API_KEY']
+        var query = `https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${placeName}&inputtype=textquery&fields=name,formatted_address,geometry,place_id,types&key=${PLACE_API_KEY}`;
+        request.get(query,function(err,response,body){
+            if(response.statusCode === 200){
+                resolve(JSON.parse(body))
+            }else{
+                reject(new Error('Error whilr connectiong place API'))
+            }
+        });
+    });
+}
+
+// *****************************************************/
+
 exports.getCrawlURL = async function(place, placeType){
     //arguments*************
     // place - place to be search

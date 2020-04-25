@@ -2,7 +2,7 @@ const express = require('express');
 const fs  = require('fs')
 const router = express.Router();
 
-var searchResult = require('../models/customeSearch');
+var searchResult = require('../models/api');
 var spider = require('../models/spider');
 var readFile = require('../models/readJsonFile');
 

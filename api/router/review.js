@@ -5,7 +5,7 @@ const router = express.Router();
 let {PythonShell} = require('python-shell')
 
 var spider = require('../models/spider');
-var searchResult = require('../models/customeSearch');
+var searchResult = require('../models/api');
 
 
 

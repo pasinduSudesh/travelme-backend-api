@@ -1,6 +1,29 @@
 const firebase = require('firebase-admin')
 const fs = require('fs')
 
+//************************************* */
+
+exports.saveReviewToDB = function(data){
+    return new Promise((resolve,reject)=>{
+        var ref = firebase.database().ref('travelme')
+        var reviewRef = ref.child('user_reviews');
+        reviewRef.push(data,(err)=>{
+            if (err){
+                reject(new Error(err))
+            }else{
+                resolve(true)
+            }
+        });
+    });
+
+    
+    
+        
+    
+}
+
+//************************************* */
+
 
 exports.savePlaceDetails = function( callback){
     var rd = fs.readFileSync('crawlerResults/placeSpiderResults.json')

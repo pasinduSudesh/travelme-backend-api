@@ -14,6 +14,7 @@ admin.initializeApp({
   });
 
 //const requre router path
+const homeRouter = require('./api/router/home');
 const reviewRouter = require('./api/router/review')
 const crawlNearestPlaceRouter = require('./api/router/crawlNearestPlaces');
 const crawlReviewsRouter = require('./api/router/crawlReviews');
@@ -37,7 +38,8 @@ app.use((req,res,next)=>{
 });
 
 //const use routers
-app.use('/reviews', reviewRouter)
+app.use('/',homeRouter);
+app.use('/reviews', reviewRouter);
 app.use('/crawlNearestPlaces',crawlNearestPlaceRouter);
 app.use('/crawlReviews',crawlReviewsRouter);
 app.use('/save',save);
