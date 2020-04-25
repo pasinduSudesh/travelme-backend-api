@@ -14,7 +14,6 @@ router.post('/',async function(req,res,next){
     try{
         
         var placeDetails = await api.googlePlaceAPI(place);
-        var address = placeDetails['candidates'][0]['formatted_address'];
         var reviewData = {
             address: placeDetails['candidates'][0]['formatted_address'],
             name: placeDetails['candidates'][0]['name'],

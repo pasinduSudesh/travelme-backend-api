@@ -1,5 +1,24 @@
 const firebase = require('firebase-admin')
 const fs = require('fs')
+const crawlResultFile = require('./readJsonFile');
+
+//************************************* */
+
+exports.saveLinksToReview = function(links){
+    return new Promise((resolve,reject)=>{
+        var ref = firebase.database().ref('travelme')
+        var reviewRef = ref.child('links_to_review');
+        links.forEach(value=>{
+            reviewRef.push({url:value},(err)=>{
+                if (err){
+                    reject(new Error(err))
+                }
+            });
+
+        });
+        resolve(true);
+    });
+}
 
 //************************************* */
 
@@ -21,6 +40,56 @@ exports.saveReviewToDB = function(data){
         
     
 }
+
+//************************************* */
+//save crawling urls to DB
+
+exports.savePlaceCrawlerDet = async function(url,crawlingData){
+    // var crawlingData = await crawlResultFile.readFile('crawlerResults/placeSpiderResults.json');
+    return new Promise((resolve,reject)=>{
+        // console.log(url)
+        var ref = firebase.database().ref('travelme');
+        var crawlerRef = ref.child('crawler_results_places');
+        crawlerRef.push({
+            url:url,
+            results: crawlingData
+        },(err)=>{
+            if(err){
+                reject(new Error(err))
+            }else{
+                resolve()
+            }
+        });
+    });
+}
+
+// **************************************************************/
+
+exports.checkUrlInDB =  function(url){
+    return new Promise((resolve,reject)=>{
+        var ref = firebase.database().ref('travelme/crawler_results_places');
+        ref.orderByChild('url').equalTo(url).on('value',function(snap){
+            var val = snap.val();
+            if(val !== null){
+                var keys = Object.keys(val);
+                resolve(val[keys[0]]['results']);
+            }else{
+                resolve(false);
+            }
+
+        },(err)=>{
+            reject(new Error(err))
+        });
+
+    });
+}
+        
+
+    
+
+
+
+
 
 //************************************* */
 
