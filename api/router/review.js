@@ -6,12 +6,21 @@ let {PythonShell} = require('python-shell')
 
 var spider = require('../models/spider');
 var searchResult = require('../models/api');
+var firebase = require('firebase-admin');
+const db = require('../models/firebase');
 
 
 
-router.get('/',function(req,res,next){
-    console.log("Start")
-    hello()
+router.get('/',async function(req,res,next){
+    console.log("Start");
+    var urls = ['https://www.tripadvisor.com/Attraction_Review-g297896-d3617497-Reviews-Galle_Fort-Galle_Galle_District_Southern_Province.html',
+    'https://www.tripadvisor.com/Attraction_Review-g297896-d447525-Reviews-Sinharaja_Forest_Reserve-Galle_Galle_District_Southern_Province.html']
+    await db.getLinksBeforeCrawl(urls);
+    res.send("ddd");
+    // hello()
+
+    // var s = await spider.crawlReviewWithUrls("dd");
+    // if(s){res.send("fkfkf")}
     async function hello(){
         const a = await aa();
         const d = await bb();

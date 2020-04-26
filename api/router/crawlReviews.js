@@ -16,9 +16,9 @@ router.get('/:place',async function(req,res,next){
         if(places){
             let places = await readFile.readFile('crawlerResults/placeSpiderResults.json')
             let links = places['links'];
-            const Hasreviews = await spider.runReviewSpider(links);
-
-            if(Hasreviews){
+            // const Hasreviews = await spider.runReviewSpider(links);
+            await spider.crawlReviewWithUrls(links)
+            if(true){
                 let reviews = await readFile.readFile('crawlerResults/reviewSpiderResults.json');
                 res.status(200).json(reviews);
             }

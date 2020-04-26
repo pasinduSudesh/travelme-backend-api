@@ -9,7 +9,12 @@ exports.saveLinksToReview = function(links){
         var ref = firebase.database().ref('travelme')
         var reviewRef = ref.child('links_to_review');
         links.forEach(value=>{
-            reviewRef.push({url:value},(err)=>{
+            reviewRef.push({
+                url:value['url'],
+                pages_to_review: reviewNumber(value['review_count']),
+                crawled_pages: 0
+
+            },(err)=>{
                 if (err){
                     reject(new Error(err))
                 }
@@ -18,6 +23,10 @@ exports.saveLinksToReview = function(links){
         });
         resolve(true);
     });
+
+    function reviewNumber(str){
+        return parseInt(str.split(" ")[0].replace(",",""))/10;
+    }
 }
 
 //************************************* */
@@ -149,3 +158,112 @@ exports.saveToFirebase = function(data,child,callback){
     
     
 }
+
+
+//*************************************************** */ 
+
+//after crawling reviews this change the links states
+
+exports.afterCrawlChangeLinks = function(urls){
+    
+    return new Promise(async (resolve,reject)=>{
+        for(var i=0;i<urls.length;i++){
+            console.log("***********************")
+            var get = await getCount(urls[i]);
+            var update = await upd(get['key'],get['count']);
+        }
+        resolve(true);        
+    });
+
+    function getCount(url){
+        return new Promise((resolve,reject)=>{
+            var ref = firebase.database().ref('travelme/links_to_review');
+            ref.orderByChild('url').equalTo(url).on('value',function(snap){///////this must be changed
+                var val = snap.val();
+                if(val !== null){
+    
+                    key = Object.keys(val)[0];
+                    // console.log(Object.keys(val));
+                    var count = parseInt(val[key]['crawled_pages']) + 1;
+                    resolve({key:key,count:count});
+                    
+                }
+            },(err)=>{
+                reject(new Error(err));
+            });
+        });
+    }
+    function upd(key,count){
+        return new Promise((resolve,reject)=>{
+            var ref = firebase.database().ref('travelme/links_to_review');
+            var dd = ref.child(key)
+            // console.log
+            dd.update({
+                crawled_pages:count
+            });
+            resolve(true)
+        });
+    }
+
+    function updateCount(count,key){
+        var ref = firebase.database().ref('travelme/links_to_review');
+        var reff = ref.child(key)
+        // console.log
+        reff.update({
+            crawled_pages:count
+        });
+    }
+}
+
+//*************************************************** */ 
+//*************************************************** */ 
+//get links for crawl reviews
+exports.getLinksBeforeCrawl = async function(links){
+    // console.log(await getLinkDetails("dd"))
+    return new Promise(async (resolve,reject)=>{
+        var linkList = []
+        for(var i=0;i<links.length;i++){
+            // console.log(links[i])
+            var linkDet = await getLinkDetails(links[i]);
+            if(linkDet){
+                if(linkDet['crawled_pages'] < linkDet['pages_to_review']){
+                    if(linkDet['crawled_pages'] === 0){
+                        linkList.push(linkDet['url']);
+                        
+                    }
+                    else{
+                        var pagination = "or" + (linkDet['crawled_pages'] * 5).toString();
+                        var splitUrl = linkDet['url'].split("-");
+                        var newUrl = splitUrl[0]+"-"+splitUrl[1]+"-"+splitUrl[2]+"-"+splitUrl[3]+"-"+pagination+"-"+splitUrl[4]+"-"+splitUrl[5];
+                        linkList.push(newUrl);
+                         
+                    }
+                }
+            }
+        }
+        // console.log(linkList);
+        resolve(linkList);
+    });
+    
+
+
+    function getLinkDetails(url){
+        // var url = 'https://www.tripadvisor.com/Attraction_Review-g297896-d3617497-Reviews-Galle_Fort-Galle_Galle_District_Southern_Province.html';
+        return new Promise((resolve,reject)=>{
+            var ref = firebase.database().ref('travelme/links_to_review');
+            ref.orderByChild('url').equalTo(url).on('value',function(snap){
+                var val = snap.val();
+                if(val !== null){
+                    var keys = Object.keys(val);
+                    resolve(val[keys[0]]);
+                }else{
+                    resolve(false);
+                }
+            },(err)=>{
+                reject(new Error(err));
+            });
+
+        });
+    }
+}
+//*************************************************** */ 

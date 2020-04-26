@@ -1,6 +1,7 @@
 var fs = require('fs')
 let {PythonShell} = require('python-shell')
-
+const files = require('./readJsonFile');
+const db = require('firebase-admin')
 exports.runReviewSpider = function(url){
     //run review sopider
     //input urls as a list
@@ -73,3 +74,82 @@ function runSpider(spiderRunner,urlString){
 
 
 }
+
+// ******************************************
+//run crawl spider and save result in to database
+exports.crawlReviewWithUrls =  function(urls){
+    return new Promise(async (resolve,reject)=>{
+        try{
+            var isCrawled = await runReviewSpider(urls);
+            if(isCrawled){
+                var reviews = await files.readFile('crawlerResults/reviewSpiderResults.json');
+                var listOfPlaces = [];
+                var listOfReviews = [];
+                reviews['result'].forEach(element => {
+                    if(listOfPlaces.includes(element['place'])){
+                        var index = listOfPlaces.indexOf(element['place']);
+                        listOfReviews[index].push(element['review']);
+                    }else{
+                        listOfPlaces.push(element['place']);
+                        listOfReviews.push(element['review']);
+                    }
+        
+                });
+                // console.log(listOfPlaces[0]);
+                // console.log(listOfReviews[0]);
+                
+                    var ref = db.database().ref('travelme');
+                    var reviewRef = ref.child('reviews');
+                    listOfReviews.forEach((review,index)=>{
+                        reviewArray = []
+                        // console.log(typeof(review[0]));
+                        if(typeof(review) === "object"){
+                            
+                            review.forEach(subReview=>{
+                                if(typeof(subReview) === "object"){
+                                    subReview.forEach(subSubReview=>{
+                                        reviewArray.push(subSubReview);
+                                    })
+                                }else if (typeof(subReview) === "object"){
+        
+                                    reviewArray.push(subReview);
+                                }                        
+                            });
+                        }else{
+                            reviewArray.push(review);
+                            
+                        }
+                        reviewRef.push({
+                            place:listOfPlaces[index],
+                            reviews:reviewArray
+                        });
+                    });
+                }
+                resolve(true)
+            
+        }catch(err){
+            reject(new Error(err))
+        } 
+});
+
+    function runReviewSpider(url){
+        //run review sopider
+        //input urls as a list
+        return new Promise(async (resolve,reject)=>{
+            try{
+                const urlString = await urlToString(url);
+                const spider = await runSpider('reviewSpiderRunner.py',urlString);
+                resolve(spider)
+            }
+            catch{
+                reject(new Error('Error when running spider'))
+            }
+        });
+        
+    }
+    
+
+
+}
+
+// ******************************************

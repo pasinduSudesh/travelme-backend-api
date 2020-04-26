@@ -15,17 +15,28 @@ router.get('/:place',async function(req,res,next){
         var hasCrawled = await db.checkUrlInDB(urls[0]);
 
         if(hasCrawled){
-            res.status(200).json(hasCrawled)
+            res.status(200).json(hasCrawled);
+            
         }else{
             var places = await spider.runPlaceSpider(urls);         
 
             if(places){
                 var placeDet = await readFile.readFile('crawlerResults/placeSpiderResults.json');
-                res.status(200).json(placeDet);
+                // res.status(200).json(placeDet);
                 db.savePlaceCrawlerDet(urls[0],placeDet)
-                var links = placeDet['links']
-                db.saveLinksToReview(links);
-            }
+                var p = placeDet['places']
+                var  links = []
+                p.forEach(e => {
+                   links.push({url: e['review_link'], review_count:e['no_of_reviews']});
+                });
+                await db.saveLinksToReview(links);
+                await spider.crawlReviewWithUrls(placeDet['links']);
+                await db.afterCrawlChangeLinks(placeDet['links']);
+                console.log("ending...........")
+                res.status(200).json(placeDet);
+                console.log("end")
+                
+            } 
             
         }       
                 
