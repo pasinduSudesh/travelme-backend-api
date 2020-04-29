@@ -22,7 +22,9 @@
   "nodemonConfig": {
     "ignore": [
       "crawlerResults/reviewSpiderResults.json",
-      "crawlerResults/placeSpiderResults.json"
+      "crawlerResults/placeSpiderResults.json",
+      "'sentimentJson/sentimentResults.json",
+      "sentimentJson/reviewsForSentiment.json"
     ]
   }
 }

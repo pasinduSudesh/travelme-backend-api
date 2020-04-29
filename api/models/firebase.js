@@ -178,7 +178,8 @@ exports.afterCrawlChangeLinks = function(urls){
     function getCount(url){
         return new Promise((resolve,reject)=>{
             var ref = firebase.database().ref('travelme/links_to_review');
-            ref.orderByChild('url').equalTo(url).on('value',function(snap){///////this must be changed
+            // var y = "https://www.tripadvisor.com/Attraction_Review-g297896-d447525-Reviews"
+            ref.orderByChild('url').startAt(url.substr(0,68)).on('value',function(snap){///////this must be changed
                 var val = snap.val();
                 if(val !== null){
     
@@ -266,4 +267,12 @@ exports.getLinksBeforeCrawl = async function(links){
         });
     }
 }
+//*************************************************** */ 
+
+//*************************************************** */ 
+//SENTIMENT//
+exports.getReviewsForAnalyse = function(){
+     
+}
+
 //*************************************************** */ 

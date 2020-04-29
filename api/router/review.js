@@ -7,17 +7,61 @@ let {PythonShell} = require('python-shell')
 var spider = require('../models/spider');
 var searchResult = require('../models/api');
 var firebase = require('firebase-admin');
-const db = require('../models/firebase');
+// const db = require('../models/firebase');
+const db = require('firebase-admin');
 
 
 
 router.get('/',async function(req,res,next){
-    console.log("Start");
-    var urls = ['https://www.tripadvisor.com/Attraction_Review-g297896-d3617497-Reviews-Galle_Fort-Galle_Galle_District_Southern_Province.html',
-    'https://www.tripadvisor.com/Attraction_Review-g297896-d447525-Reviews-Sinharaja_Forest_Reserve-Galle_Galle_District_Southern_Province.html']
-    await db.getLinksBeforeCrawl(urls);
-    res.send("ddd");
+    // console.log("Start");
+    // var urls = ['https://www.tripadvisor.com/Attraction_Review-g297896-d3617497-Reviews-Galle_Fort-Galle_Galle_District_Southern_Province.html',
+    // 'https://www.tripadvisor.com/Attraction_Review-g297896-d447525-Reviews-Sinharaja_Forest_Reserve-Galle_Galle_District_Southern_Province.html']
+    // // await db.afterCrawlChangeLinks(urls);
+    // var aa = await db.getLinksBeforeCrawl(urls);
+    // res.send(aa);
     // hello()
+    // try {
+    //     res.send(await rrr())
+    // }catch(err){
+    //     res.send(err);
+    // }
+    // saveRevs();
+    res.send(await rrr());
+    function saveRevs(){
+        var ref = db.database().ref('travelme/reviews')
+        ref.orderByChild("place").limitToFirst(10).on('value',snap=>{
+            var val = snap.val()
+            keys = Object.keys(val)
+            var reviewArray = []
+            keys.forEach(key => {
+                reviewArray.push(val[key])
+            });
+            var data = JSON.stringify({
+                reviews:reviewArray
+            })
+            fs.writeFileSync('sentimentJson/reviewsForSentiment.json',data)
+
+        })
+    }
+    function rrr(){
+        let options = {
+            
+            pythonOptions: ['-u'], 
+            scriptPath: 'pythonScripts',
+            args: []
+        };
+        return new Promise((resolve,reject)=>{
+            PythonShell.run('sentimentTest.py', options, function (err, results) {
+                if(err){
+                    reject(new Error(err))
+                }else{
+                    resolve(results)
+                }
+            });
+        });
+    }
+
+    
 
     // var s = await spider.crawlReviewWithUrls("dd");
     // if(s){res.send("fkfkf")}

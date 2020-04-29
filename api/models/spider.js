@@ -100,6 +100,7 @@ exports.crawlReviewWithUrls =  function(urls){
                 
                     var ref = db.database().ref('travelme');
                     var reviewRef = ref.child('reviews');
+                    var allReviews = [];
                     listOfReviews.forEach((review,index)=>{
                         reviewArray = []
                         // console.log(typeof(review[0]));
@@ -121,11 +122,17 @@ exports.crawlReviewWithUrls =  function(urls){
                         }
                         reviewRef.push({
                             place:listOfPlaces[index],
-                            reviews:reviewArray
+                            reviews:reviewArray,
+                            analys_state:false
+                        });
+                        allReviews.push({
+                            place:listOfPlaces[index],
+                            reviews:reviewArray,
+                            analys_state:false
                         });
                     });
                 }
-                resolve(true)
+                resolve(allReviews);
             
         }catch(err){
             reject(new Error(err))

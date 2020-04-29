@@ -11,7 +11,16 @@ router.get('/',function(req,res,next){
     var ref = firebase.database().ref('travelme/analyzed_places');
 
     ref.orderByChild("place").on("value", function(snapshot) {
-        res.status(200).json(snapshot.val())
+      var val = snapshot.val();
+        var keys = Object.keys(val)
+        console.log(keys);
+        var  places = [];
+        keys.forEach(key=>{
+          places.push(val[key])
+        })
+        res.status(200).json({
+          bestPlaces:places
+        })
       }, function (errorObject) {
         console.log("The read failed: " + errorObject.code);
       });
