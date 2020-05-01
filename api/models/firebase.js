@@ -140,9 +140,10 @@ exports.checkUrlInDB =  function(url){
         var ref = firebase.database().ref('travelme/crawler_results_places');
         ref.orderByChild('url').equalTo(url).on('value',function(snap){
             var val = snap.val();
-            console.log(val,"value***************************")
+            // console.log(val,"value***************************")
             if(val !== null){
                 var keys = Object.keys(val);
+                // console.log(val,"sjsjsjjssjjsjssjsjjsjsj")
                 resolve(val[keys[0]]['results']);
             }else{
                 resolve(false);
@@ -358,8 +359,8 @@ function ckeckHasPlaces(placeName){
 //TRIP PLANNIG
 exports.getPlacesForTripFromDB = function(placeCount,lat,lng){
     return new Promise((resolve,reject)=>{
-        console.log(lat)
-        console.log(lng)
+        // console.log(lat)
+        // console.log(lng)
         var ref = firebase.database().ref('travelme/places');
         // var startAt = lng-0.5 && lng-0.4 && lng-0.3 && lng-0.2 && lng-0.1 && lng+0.1 && lng+0.2 && lng+0.3 && lng+0.4 && lng-0.5  
         // var startAt = lng-0.5 || lng-0.4 || lng-0.3 || lng-0.2 || lng-0.1 || lng+0.1 || lng+0.2 || lng+0.3 || lng+0.4 || lng-0.5  
@@ -385,7 +386,7 @@ exports.getPlacesForTripFromDB = function(placeCount,lat,lng){
                         }
                     }
                 }
-                console.log(placeList,count)
+                // console.log(placeList,count)
 
                 resolve(placeList)
 

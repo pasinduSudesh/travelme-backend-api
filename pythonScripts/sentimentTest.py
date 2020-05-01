@@ -6,6 +6,9 @@ import json
 def readReviews():
     with open('sentimentJson/reviewsForSentiment.json',encoding='utf-8') as reviewsFile:
         return json.load(reviewsFile)
+# def readReviews():
+#     with open('crawlerResults/reviewSpiderResults.json',encoding='utf-8') as reviewsFile:
+#         return json.load(reviewsFile)
 
 def saveSentiment(file):
     with open('sentimentJson/sentimentResults.json', 'w') as json_file:

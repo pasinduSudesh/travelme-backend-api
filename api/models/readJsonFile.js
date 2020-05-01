@@ -16,3 +16,11 @@ exports.readFile = function(filePathFromRoot){
     });
     
 }
+
+exports.writeFile = function(filePathFromRoot,data){
+    return new Promise((resolve,reject)=>{
+        var json = JSON.stringify(data);
+        fs.writeFile(filePathFromRoot,json);
+        resolve();
+    })
+}

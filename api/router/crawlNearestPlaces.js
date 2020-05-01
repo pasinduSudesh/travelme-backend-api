@@ -11,7 +11,7 @@ router.get('/:place',async function(req,res,next){
     const place = req.params.place;
     try{
         var urls = await searchResult.getCrawlURL(place,0);
-        // console.log(urls)
+        console.log(urls)
         var hasCrawled = await db.checkUrlInDB(urls[0]);
         // console.log(hasCrawled)
         if(hasCrawled){
@@ -32,7 +32,7 @@ router.get('/:place',async function(req,res,next){
                 await db.saveLinksToReview(links);
                 await db.savePlaceDet(p)               
                 // await spider.crawlReviewWithUrls(placeDet['links']);
-                // await db.afterCrawlChangeLinks(placeDet['links']);
+                await db.afterCrawlChangeLinks(placeDet['links']);
                 // console.log("ending...........")
                 res.status(200).json(placeDet);
                 console.log("end")
