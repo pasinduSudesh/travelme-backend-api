@@ -9,12 +9,18 @@ var config = JSON.parse(data)
 exports.googlePlaceAPI = async function(placeName){
     return new Promise((resolve,reject)=>{
         var PLACE_API_KEY = config['PLACE_API_KEY']
-        var query = `https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${placeName}&inputtype=textquery&fields=name,formatted_address,geometry,place_id,types&key=${PLACE_API_KEY}`;
+        var query = `https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${placeName}&inputtype=textquery&fields=name,formatted_address,geometry,place_id&key=${PLACE_API_KEY}`;
         request.get(query,function(err,response,body){
-            if(response.statusCode === 200){
-                resolve(JSON.parse(body))
+            // console.log(body)
+            // console.log("********************************************")
+            if(err){
+                reject(new Error(err));
             }else{
-                reject(new Error('Error whilr connectiong place API'))
+                if(response.statusCode === 200){
+                    resolve(JSON.parse(body))
+                }else{
+                    reject(new Error('Error while connectiong place API'))
+                }
             }
         });
     });

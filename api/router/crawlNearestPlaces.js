@@ -9,30 +9,31 @@ var db = require('../models/firebase');
 
 router.get('/:place',async function(req,res,next){
     const place = req.params.place;
-
     try{
         var urls = await searchResult.getCrawlURL(place,0);
+        // console.log(urls)
         var hasCrawled = await db.checkUrlInDB(urls[0]);
-
+        // console.log(hasCrawled)
         if(hasCrawled){
-            res.status(200).json(hasCrawled);
-            
+            res.status(200).json(hasCrawled);            
         }else{
-            var places = await spider.runPlaceSpider(urls);         
-
+            var places = await spider.runPlaceSpider(urls);   
+            // console.log(places)  
+            // console.log("runs spider ")    
             if(places){
                 var placeDet = await readFile.readFile('crawlerResults/placeSpiderResults.json');
                 // res.status(200).json(placeDet);
-                db.savePlaceCrawlerDet(urls[0],placeDet)
+                db.savePlaceCrawlerDet(urls[0],placeDet);
                 var p = placeDet['places']
                 var  links = []
                 p.forEach(e => {
                    links.push({url: e['review_link'], review_count:e['no_of_reviews']});
                 });
                 await db.saveLinksToReview(links);
-                await spider.crawlReviewWithUrls(placeDet['links']);
-                await db.afterCrawlChangeLinks(placeDet['links']);
-                console.log("ending...........")
+                await db.savePlaceDet(p)               
+                // await spider.crawlReviewWithUrls(placeDet['links']);
+                // await db.afterCrawlChangeLinks(placeDet['links']);
+                // console.log("ending...........")
                 res.status(200).json(placeDet);
                 console.log("end")
                 

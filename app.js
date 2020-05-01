@@ -21,6 +21,7 @@ const crawlReviewsRouter = require('./api/router/crawlReviews');
 const save = require('./api/router/save');
 const addReviewRouter = require('./api/router/addReview');
 const bestPlaceRouter = require('./api/router/bestPlaces');
+const createTripPlanRouter = require('./api/router/tripPlan');
 
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({extended:false}));
@@ -44,7 +45,9 @@ app.use('/crawlNearestPlaces',crawlNearestPlaceRouter);
 app.use('/crawlReviews',crawlReviewsRouter);
 app.use('/save',save);
 app.use('/addReview',addReviewRouter);
-app.use('/bestPlaces',bestPlaceRouter)
+app.use('/bestPlaces',bestPlaceRouter);
+app.use('/planTrip',createTripPlanRouter);
+
 
 //handdle 404 error 
 app.use((req,res,next)=>{

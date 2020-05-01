@@ -45,5 +45,6 @@ class GoogleSpider(scrapy.Spider):
 
         with open('crawlerResults/placeSpiderResults.json', 'w') as output:
             json.dump(data, output)
+        print("ok")
 
         yield data

@@ -1,6 +1,7 @@
 const firebase = require('firebase-admin')
 const fs = require('fs')
 const crawlResultFile = require('./readJsonFile');
+const api = require('./api');
 
 //************************************* */
 
@@ -73,12 +74,73 @@ exports.savePlaceCrawlerDet = async function(url,crawlingData){
 }
 
 // **************************************************************/
+// **************************************************************/
+//saving place details
+exports.savePlaceDet = function(places){
+    return new Promise( (resolve,reject)=>{
+        var errors = null
+        places.forEach(async (place)=>{
+            try{
+                var placeDetFromGoogle =  await api.googlePlaceAPI(place['place_name']);
+                var hasPlace = await hasPlaceInDB(placeDetFromGoogle['candidates'][0]['place_id']);
+            }catch(err){
+                errors = err
+            }
+            if(! hasPlace){
+                var reviewData = {
+                    address: placeDetFromGoogle['candidates'][0]['formatted_address'],
+                    name: placeDetFromGoogle['candidates'][0]['name'],
+                    place_id: placeDetFromGoogle['candidates'][0]['place_id'],
+                    lat: placeDetFromGoogle['candidates'][0]['geometry']['location']['lat'],
+                    lng: placeDetFromGoogle['candidates'][0]['geometry']['location']['lng'],
+                    rating:0,
+                    positivePresentage:0,
+                    negativePresentage:0,
+                    naturalPresentage:0,
+                    tolatReviews:0,
+                    totalPolarity:0,
+                    subjectivities:null,
+                    polarities:null,
+                    bestReview:"Best place to travel",
+                    analyseState:false
+                }
+                var ref = firebase.database().ref('travelme');
+                var placeRef = ref.child('places');
+                placeRef.push(reviewData,(err)=>{
+                    errors = err
+                })
+            }            
+        });
+        if(errors === null){
+            resolve(true);
+        }else{
+            reject(new Error(errors));
+        }
+    });
+}
+
+function hasPlaceInDB(placeID){
+    return new Promise((resolve,reject)=>{
+        var ref = firebase.database().ref('travelme/places');
+        ref.orderByChild('place_id').equalTo(placeID).on('value',(snap)=>{
+            if(snap.val() !== null){
+                resolve(true);
+            }else{
+                resolve(false)
+            }
+        },(err)=>{})
+    });
+}
+
+// **************************************************************/
+// **************************************************************/
 
 exports.checkUrlInDB =  function(url){
     return new Promise((resolve,reject)=>{
         var ref = firebase.database().ref('travelme/crawler_results_places');
         ref.orderByChild('url').equalTo(url).on('value',function(snap){
             var val = snap.val();
+            console.log(val,"value***************************")
             if(val !== null){
                 var keys = Object.keys(val);
                 resolve(val[keys[0]]['results']);
@@ -275,4 +337,70 @@ exports.getReviewsForAnalyse = function(){
      
 }
 
+exports.saveSentimentDetails = function(data){
+    return new Promise((resolve,reject)=>{
+        data["analyse"].forEach((analyseData)=>{
+
+        });
+
+    });
+}
+
+function ckeckHasPlaces(placeName){
+    
+
+}
+
+
+
+//*************************************************** */ 
+//*************************************************** */ 
+//TRIP PLANNIG
+exports.getPlacesForTripFromDB = function(placeCount,lat,lng){
+    return new Promise((resolve,reject)=>{
+        console.log(lat)
+        console.log(lng)
+        var ref = firebase.database().ref('travelme/places');
+        // var startAt = lng-0.5 && lng-0.4 && lng-0.3 && lng-0.2 && lng-0.1 && lng+0.1 && lng+0.2 && lng+0.3 && lng+0.4 && lng-0.5  
+        // var startAt = lng-0.5 || lng-0.4 || lng-0.3 || lng-0.2 || lng-0.1 || lng+0.1 || lng+0.2 || lng+0.3 || lng+0.4 || lng-0.5  
+        ref.orderByChild('rating').on('value',function(snap){
+            var val = snap.val()
+            if(val !== null){
+                var keys = Object.keys(val);
+                var count = 0
+                var placeList = []
+                for(var i=0;i<keys.length;i++){                   
+                    var data = val[keys[i]]
+                    // console.log(data['lat'],data['lng'])
+                    // console.log(data['lat'] + 0.5,data['lng'] + 0.5)
+                    if((data['lat'] > lat - 0.5) && (data['lat'] < lat + 0.5) ){
+                        if((data['lng'] > lng - 0.5) && (data['lng'] < lng + 0.5) ){
+                            // console.log(data)
+                            count = count +1
+                            if(!data['analyseState']){
+                                // consol/e.log(data)
+                                placeList.push(data);
+                                if(count === placeCount){break}
+                            }
+                        }
+                    }
+                }
+                console.log(placeList,count)
+
+                resolve(placeList)
+
+            }else{
+                resolve(false);
+            }
+            
+            
+            
+        },(err)=>{
+            reject("Error in DB get analize details")
+        });
+    });
+}
+
+
+//*************************************************** */ 
 //*************************************************** */ 

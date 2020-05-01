@@ -67,7 +67,7 @@ function runSpider(spiderRunner,urlString){
             if(err){
                 reject(new Error(err))
             }else{
-                resolve(true)
+                resolve(results)
             }
         });
     });
