@@ -340,11 +340,61 @@ exports.getReviewsForAnalyse = function(){
 
 exports.saveSentimentDetails = function(data){
     return new Promise((resolve,reject)=>{
-        data["analyse"].forEach((analyseData)=>{
+        console.log("ddddddddddd");
+        data["analyse"].forEach(async (analyseData)=>{
+            var det = await api.googlePlaceAPI(analyseData['placeName'])
+            
+            var placeId = det['candidates'][0]['place_id'];
+
+            var ref = firebase.database().ref('travelme/places');
+            ref.orderByChild('place_id').equalTo(placeId).on('value', async function(snap){
+                var val= snap.val();
+                if(val !== null){
+                    var keys = Object.keys(val);
+                    for (var i =0;i<keys.length;i++){
+                        var obj = val[keys[i]]
+                        console.log("UPDATING");
+                        await upd(analyseData,obj,keys[i]);
+                    }
+
+                }else{
+                    console.log("SAVING");
+                    var ref = firebase.database().ref('travelme/places');
+                    ref.push(analyseData);
+
+
+                }
+            },(err)=>{})
+
 
         });
 
     });
+
+    function upd(newData,oldData,key){
+        return new Promise((resolve,reject)=>{
+            var ref = firebase.database().ref('travelme/places/'+key+'/positivePresentage');
+            var dd = ref.set(99.99)
+            // console.log
+            // dd.update(setNewValue(newData,oldData));
+            resolve(true)
+
+        });
+    }
+
+    function setNewValue(newData,oldData){
+        var dd = {
+        positivePresentage:(((oldData['tolatReviews']*oldData['positivePresentage']/100) + (newData['tolatReviews']*newData['positivePresentage']/100)) / (oldData['tolatReviews']+newData['tolatReviews']))*100,
+        naturalPresentage:(((oldData['tolatReviews']*oldData['naturalPresentage']/100) + (newData['tolatReviews']*newData['naturalPresentage']/100)) / (oldData['tolatReviews']+newData['tolatReviews']))*100,
+        negativePresentage:(((oldData['tolatReviews']*oldData['negativePresentage']/100) + (newData['tolatReviews']*newData['negativePresentage']/100)) / (oldData['tolatReviews']+newData['tolatReviews']))*100,
+        tolatReviews:oldData['tolatReviews']+newData['tolatReviews'],
+        bestReview:newData['bestReview'],
+        totalPolarity: ((newData['totalPolarity']/newData['tolatReviews'])+(oldData['totalPolarity']/oldData['totalReviews']))*(newData['tolatReviews']+oldData['totalReviews']),
+        rating: (((newData['totalPolarity']/newData['tolatReviews'])+(oldData['totalPolarity']/oldData['totalReviews']))*(newData['tolatReviews']+oldData['totalReviews']))*100
+
+        }
+        return dd;
+    }
 }
 
 function ckeckHasPlaces(placeName){

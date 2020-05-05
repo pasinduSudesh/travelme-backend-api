@@ -1,7 +1,8 @@
 var searchResult = require('./api');
 var spider = require('./spider');
 var readFile = require('./readJsonFile');
-var db = require('./firebase');
+// var db = require('./firebase');
+var db = require('./mongoose');
 
 exports.crawlWithPlaceName =  function(place){
 

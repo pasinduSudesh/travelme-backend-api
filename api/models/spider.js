@@ -1,7 +1,13 @@
 var fs = require('fs')
 let {PythonShell} = require('python-shell')
 const files = require('./readJsonFile');
-const db = require('firebase-admin')
+// const db = require('firebase-admin')
+const db = require('mongoose');
+
+var Reviews = require('../db/reviews')
+var api = require('../models/api');
+
+
 exports.runReviewSpider = function(url){
     //run review sopider
     //input urls as a list
@@ -98,10 +104,10 @@ exports.crawlReviewWithUrls =  function(urls){
                 // console.log(listOfPlaces[0]);
                 // console.log(listOfReviews[0]);
                 
-                    var ref = db.database().ref('travelme');
-                    var reviewRef = ref.child('reviews');
+                    // var ref = db.database().ref('travelme');//*************** */
+                    // var reviewRef = ref.child('reviews');
                     var allReviews = [];
-                    listOfReviews.forEach((review,index)=>{
+                    listOfReviews.forEach(async (review,index)=>{
                         reviewArray = []
                         // console.log(typeof(review[0]));
                         if(typeof(review) === "object"){
@@ -120,11 +126,8 @@ exports.crawlReviewWithUrls =  function(urls){
                             reviewArray.push(review);
                             
                         }
-                        reviewRef.push({
-                            place:listOfPlaces[index],
-                            reviews:reviewArray,
-                            analys_state:false
-                        });
+                        //save to db
+                        await saveToDB(listOfPlaces[index],reviewArray)
                         allReviews.push({
                             place:listOfPlaces[index],
                             reviews:reviewArray,
@@ -151,8 +154,28 @@ exports.crawlReviewWithUrls =  function(urls){
             catch{
                 reject(new Error('Error when running spider'))
             }
+        }); 
+    }
+
+    function saveToDB(place,reviews){
+        return new Promise(async (resolve, reject) => {
+            try{
+                
+                var r = new Reviews({
+                    analysState: false,
+                    placeName: place,                        
+                    reviews:reviews
+                });
+                r.save().then(resp=>{
+                    resolve()
+                }).catch(err=>{
+                    reject(new Error(err))
+                });
+                
+            }catch(err){
+                reject(new Error(err))
+            }
         });
-        
     }
     
 

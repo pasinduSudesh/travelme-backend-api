@@ -3,6 +3,7 @@ const app = express();
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 var admin = require("firebase-admin");
+const mongoose = require('mongoose');
 
 //firebase service account json file import
 var serviceAccount = require("./serviceAccountKey.json");
@@ -12,6 +13,17 @@ admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
     databaseURL: "https://travelme-29ae1.firebaseio.com"
   });
+
+//   connect to mongo db
+mongoose.connect(
+    'mongodb+srv://travelme:travelme@cluster0-2r76h.mongodb.net/test?retryWrites=true&w=majority',
+    {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true,  }
+    ).then(resp=>{console.log("COnnected to MOngoDB")}).catch(err=>{console.log(err)});
+
+// mongoose.Promise = global.Promise;
 
 //const requre router path
 const homeRouter = require('./api/router/home');

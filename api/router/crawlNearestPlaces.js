@@ -5,7 +5,8 @@ const router = express.Router();
 var searchResult = require('../models/api');
 var spider = require('../models/spider');
 var readFile = require('../models/readJsonFile');
-var db = require('../models/firebase');
+// var db = require('../models/firebase');
+var db = require('../models/mongoose');
 
 router.get('/:place',async function(req,res,next){
     const place = req.params.place;
@@ -30,9 +31,11 @@ router.get('/:place',async function(req,res,next){
                    links.push({url: e['review_link'], review_count:e['no_of_reviews']});
                 });
                 await db.saveLinksToReview(links);
-                await db.savePlaceDet(p)               
+                await db.savePlaceDet(p) 
+                
+                
                 // await spider.crawlReviewWithUrls(placeDet['links']);
-                await db.afterCrawlChangeLinks(placeDet['links']);
+                // await db.afterCrawlChangeLinks(placeDet['links']);
                 // console.log("ending...........")
                 res.status(200).json(placeDet);
                 console.log("end")
@@ -45,7 +48,9 @@ router.get('/:place',async function(req,res,next){
     catch(err){
         res.status(500).json({
             error:{message:err.message}
+            
         });
+        console.log(err);
     }
 
 });

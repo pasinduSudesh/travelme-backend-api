@@ -5,7 +5,8 @@ var data = fs.readFileSync('./api/config/trip.json')
 var config = JSON.parse(data)
 
 var api = require('../models/api');
-var db = require('../models/firebase');
+// var db = require('../models/firebase');
+var db = require('../models/mongoose');
 var crawling = require('../models/crawling');
 var spider = require('../models/spider')
 var file = require('../models/readJsonFile');
@@ -23,34 +24,6 @@ router.post('/',async function(req,res,next){
 
     centerPoint = await api.googlePlaceAPI(place);
     console.log(centerPoint);
-
-    // var centerPoint = {
-    //     "candidates": [
-    //         {
-    //             "formatted_address": "Galle, Sri Lanka",
-    //             "geometry": {
-    //                 "location": {
-    //                     "lat": 6.0535185,
-    //                     "lng": 80.2209773
-    //                 },
-    //                 "viewport": {
-    //                     "northeast": {
-    //                         "lat": 6.0881332,
-    //                         "lng": 80.2518654
-    //                     },
-    //                     "southwest": {
-    //                         "lat": 6.023649900000001,
-    //                         "lng": 80.1721287
-    //                     }
-    //                 }
-    //             },
-    //             "name": "Galle",
-    //             "place_id": "ChIJ4_wyabtz4ToRA0zG-QO5NUo"
-    //         }
-    //     ],
-    //     "status": "OK"
-    // }
-    // ChIJ_yzbpKRz4ToRiG99Z-qKcNM
 
     var latInt = Math.round(centerPoint['candidates'][0]['geometry']['location']['lat'] * 100)/100;
     var lngInt = Math.round(centerPoint['candidates'][0]['geometry']['location']['lng'] * 100)/100;
@@ -75,7 +48,7 @@ router.post('/',async function(req,res,next){
             console.log("******GET LINKS TO CRAWL*******")
             var reviews = await spider.crawlReviewWithUrls(linksToCrawlReviews) 
             console.log("******CRAWL REVIEWS*******")
-            var save = await db.afterCrawlChangeLinks(linksToCrawlReviews);
+            var save = await db.afterCrawlChangeLinks(crawledPlaces['links']);
             console.log("******save links after crawling*******")
             
             var data = JSON.stringify({
@@ -85,14 +58,18 @@ router.post('/',async function(req,res,next){
 
             // await file.writeFile('sentimentJson/reviewsForSentiment.json',dataToSave);
             // console.log("******save reviews ti jsn*******")
-            // var senti = await sentiment.sentimentAnalyze();
+            var senti = await sentiment.sentimentAnalyze();
             // console.log("******sentiment*******")
 
-            // var resss = await file.readFile('sentimentJson/sentimantResults.json')
+            var resss = await file.readFile('sentimentJson/sentimentResults.json')
+
+            //save to db
 
 
             
-            res.status(200).json(reviews);
+
+            
+            res.status(200).json(resss);
             
         }
         
@@ -109,13 +86,20 @@ router.post('/',async function(req,res,next){
             // var dataToSave = {reviews:reviews}
             // await file.writeFile('sentimentJson/reviewsForSentiment.json',dataToSave);
             // console.log("******save reviews ti jsn*******")
-            // var senti = await sentiment.sentimentAnalyze();
             // console.log("******sentiment*******")
+            
+            var data = JSON.stringify({
+                reviews:reviews
+            })
+            fs.writeFileSync('sentimentJson/reviewsForSentiment.json',data)
+            
+            
+            var senti = await sentiment.sentimentAnalyze();
 
 
-            // var resss = await file.readFile('sentimentJson/sentimantResults.json')
+            var resss = await file.readFile('sentimentJson/sentimentResults.json')
 
-            res.status(200).json(reviews);
+            res.status(200).json(resss);
     }
     // Math.round(value)
 
