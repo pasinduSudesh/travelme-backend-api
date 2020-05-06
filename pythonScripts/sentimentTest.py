@@ -25,7 +25,10 @@ def analyse(review):
     return sentiment
 
 def getPresentage(total,count):
-    return round((count/total)*100,2)
+    if(total == 0):
+        return 0
+    else:
+        return round((count/total)*100,2)
 
     
 def sentimentAnalys(data):

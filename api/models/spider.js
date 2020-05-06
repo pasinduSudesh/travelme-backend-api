@@ -87,7 +87,9 @@ exports.crawlReviewWithUrls =  function(urls){
     return new Promise(async (resolve,reject)=>{
         try{
             var isCrawled = await runReviewSpider(urls);
+            console.log(isCrawled);
             if(isCrawled){
+                console.log("inside")
                 var reviews = await files.readFile('crawlerResults/reviewSpiderResults.json');
                 var listOfPlaces = [];
                 var listOfReviews = [];
@@ -98,20 +100,12 @@ exports.crawlReviewWithUrls =  function(urls){
                     }else{
                         listOfPlaces.push(element['place']);
                         listOfReviews.push(element['review']);
-                    }
-        
+                    }        
                 });
-                // console.log(listOfPlaces[0]);
-                // console.log(listOfReviews[0]);
-                
-                    // var ref = db.database().ref('travelme');//*************** */
-                    // var reviewRef = ref.child('reviews');
                     var allReviews = [];
                     listOfReviews.forEach(async (review,index)=>{
-                        reviewArray = []
-                        // console.log(typeof(review[0]));
-                        if(typeof(review) === "object"){
-                            
+                        var reviewArray = []
+                        if(typeof(review) === "object"){                            
                             review.forEach(subReview=>{
                                 if(typeof(subReview) === "object"){
                                     subReview.forEach(subSubReview=>{
@@ -133,9 +127,12 @@ exports.crawlReviewWithUrls =  function(urls){
                             reviews:reviewArray,
                             analys_state:false
                         });
-                    });
+                    });                    
+                    resolve(allReviews);
+                }else{
+                    reject(new Error("Review crawler not run"))
                 }
-                resolve(allReviews);
+
             
         }catch(err){
             reject(new Error(err))
@@ -160,7 +157,6 @@ exports.crawlReviewWithUrls =  function(urls){
     function saveToDB(place,reviews){
         return new Promise(async (resolve, reject) => {
             try{
-                
                 var r = new Reviews({
                     analysState: false,
                     placeName: place,                        

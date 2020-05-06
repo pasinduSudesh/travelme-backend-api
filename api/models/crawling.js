@@ -21,7 +21,7 @@ exports.crawlWithPlaceName =  function(place){
                 if(places){
                     var placeDet = await readFile.readFile('crawlerResults/placeSpiderResults.json');
                     
-                    db.savePlaceCrawlerDet(urls[0],placeDet);
+                    await db.savePlaceCrawlerDet(urls[0],placeDet);
                     var p = placeDet['places']
                     var  linksTosave = []
                     var linksToCrawl = []

@@ -54,9 +54,9 @@ class ReviewSpider(scrapy.Spider):
             p2 = p2[1:]
 
             #create place name end
-
+            # "place" : p2 + ", " + p1,
             self.results.append({
-                "place" : p2 + ", " + p1,
+                "place" : p2,
                 "review": rt,
                 "review-count": len(rt)
             })

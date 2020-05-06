@@ -45,25 +45,37 @@ exports.savePlaceCrawlerDet = function(url,results){
 }
 
 exports.saveLinksToReview = function(links){
-    return new Promise((resolve,reject)=>{
-        errors = []
-        links.forEach(link=>{
+    return new Promise(async (resolve,reject)=>{
+        try{
+            for (var x= 0; x<links.length;x++){
+                await saveLinksToReview(links[x]['url'],links[x]['review_count']);
+            }
+            resolve()
+        }
+        catch(err){
+            reject(new Error(err));
+        }
+
+    });
+
+    function saveLinksToReview(url,reviewCount){
+        return new Promise((resolve, reject) => {
             var ltr = new LinksToReview({
-                url:link['url'],
-                pagesToReview:reviewNumber(link['review_count']),
+                url:url,
+                pagesToReview:reviewNumber(reviewCount),
                 crawledPages:0
 
             })
             ltr.save()
-            .then(respo=>{})
+            .then(respo=>{
+                console.log(respo)
+                resolve()
+            })
             .catch(err=>{
-                errors.push = err
-                console.log(err);
+                reject(new Error(err));
             })
         });
-        // console.log(errors);
-        resolve()
-    });
+    }
 
     function reviewNumber(str){
         return parseInt(str.split(" ")[0].replace(",",""))/10;
@@ -177,6 +189,7 @@ exports.getLinksBeforeCrawl = function(links){
         try{
             for(var i=0;i<links.length;i++){
                 var ss  = await getLinkDet(links[i]);
+                console.log(links[i],"ssssssss");
                 var l = createLink(ss);
                 resultList.push(l);               
 
@@ -278,15 +291,81 @@ exports.afterCrawlChangeLinks = function(links){
 // ***********************************************************************************
 
 exports.saveSentiments = function(data){
-    return new Promise((resolve, reject) => {
-        for(var i = 0;i<data['analyse'].length;i++){
-            var placeDet = api.googlePlaceAPI(data['analyse'][i]);
-            if(placeDet['status'] === 'OK'){
-                var placeId = placeDet['candidates'][0]['place_id'];
-                await getPlaceDet()///
-                await SaveNewPlaceDet()///
+    return new Promise(async (resolve, reject) => {
+        try{
+            var placesAlaysed = []
+            for(var i = 0;i<data['analyse'].length;i++){
+                var placeDet = await api.googlePlaceAPI(data['analyse'][i]['placeName']);
+                if(placeDet['status'] === 'OK'){
+                    console.log("ss");
+                    var placeId = placeDet['candidates'][0]['place_id'];
+                    console.log(placeId), "placeid";
+                    var placeDet = await getPlaceDet(placeId);
+                    console.log(placeDet);
+                    console.log(data['analyse'][i])
+                    
+                    var saveDat = addSentimentDet(placeDet,data['analyse'][i])
+                    console.log(saveDat);
+                    placesAlaysed.push(saveDat);
+                    await saveData(saveDat,placeId);
+                }
             }
+            resolve(placesAlaysed);
+        }catch (err){
+            reject(new Error(err));
         }
+    });
+}
+
+function getPlaceDet(placeId){
+    return new Promise((resolve, reject) => {
+        Places.findOne({placeId:placeId})
+        .then(doc=>{
+            resolve(doc);
+        })
+        .catch(err=>{
+            reject(new Error(err))
+        })
+    });
+}
+
+function addSentimentDet(oldData,newData){
+    var dd;
+    if(oldData['totalReviews'] === 0 ){
+        dd = {
+            positivePresentage:(((oldData['totalReviews']*oldData['positivePresentage']/100) + (newData['totalReviews']*newData['positivePresentage']/100)) / (oldData['totalReviews']+newData['totalReviews']))*100,
+            naturalPresentage:(((oldData['totalReviews']*oldData['naturalPresentage']/100) + (newData['totalReviews']*newData['naturalPresentage']/100)) / (oldData['totalReviews']+newData['totalReviews']))*100,
+            negativePresentage:(((oldData['totalReviews']*oldData['negativePresentage']/100) + (newData['totalReviews']*newData['negativePresentage']/100)) / (oldData['totalReviews']+newData['totalReviews']))*100,
+            totalReviews:oldData['totalReviews']+newData['totalReviews'],
+            bestReview:newData['bestReview'],
+            totalPolarity: newData['totalPolarity'],
+            rating: newData['totalPolarity']*100
+    
+            }
+
+    }else{
+        dd = {
+            positivePresentage:(((oldData['totalReviews']*oldData['positivePresentage']/100) + (newData['totalReviews']*newData['positivePresentage']/100)) / (oldData['totalReviews']+newData['totalReviews']))*100,
+            naturalPresentage:(((oldData['totalReviews']*oldData['naturalPresentage']/100) + (newData['totalReviews']*newData['naturalPresentage']/100)) / (oldData['totalReviews']+newData['totalReviews']))*100,
+            negativePresentage:(((oldData['totalReviews']*oldData['negativePresentage']/100) + (newData['totalReviews']*newData['negativePresentage']/100)) / (oldData['totalReviews']+newData['totalReviews']))*100,
+            totalReviews:oldData['totalReviews']+newData['totalReviews'],
+            bestReview:newData['bestReview'],
+            totalPolarity: ((newData['totalPolarity']/newData['totalReviews'])+(oldData['totalPolarity']/oldData['totalReviews']))*(newData['totalReviews']+oldData['totalReviews']),
+            rating: (((newData['totalPolarity']/newData['totalReviews'])+(oldData['totalPolarity']/oldData['totalReviews']))*(newData['totalReviews']+oldData['totalReviews']))*100
+    
+            }
+    }
+    return dd;
+}
+
+function saveData(data,placeId){
+    return new Promise((resolve, reject) => {
+        Places.update({placeId:placeId},data)
+        .then(doc=>{
+            resolve();
+        }).catch(err=>{
+            reject(new Error(err));
+        })
     });
 }
 

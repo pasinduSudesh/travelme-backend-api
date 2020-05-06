@@ -3,7 +3,6 @@ const mongoose = require('mongoose');
 const reviewSchema = mongoose.Schema({
     analysState: Boolean,
     placeName: String,
-    placeId:String,
     reviews:Array
 
 });
