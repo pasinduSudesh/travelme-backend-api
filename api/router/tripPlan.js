@@ -11,6 +11,7 @@ var crawling = require('../models/crawling');
 var spider = require('../models/spider')
 var file = require('../models/readJsonFile');
 var sentiment = require('../models/sentiment');
+var tripPlan = require('../models/path');
 
 
 router.post('/',async function(req,res,next){
@@ -115,13 +116,17 @@ router.post('/',async function(req,res,next){
             // res.status(200).json(placesFroPlanTrip);
     }
     // Math.round(value)
+    placesFroPlanTrip.reverse(); 
+    var detForTripPlan = tripPlan.createList(placesFroPlanTrip);
+    var placeOrder = tripPlan.path(detForTripPlan['p'],detForTripPlan['p1'],detForTripPlan['p2'],detForTripPlan['d'],days);
+    
+    var trip = await tripPlan.fullTripPlan(placeOrder,placesFroPlanTrip);
 
-    res.status(200).json(placesFroPlanTrip);
+    var ss = tripPlan.timePlan(trip['trip'],trip['travelDetails'],days)
 
-    // console.log(lat,lng);
-    // res.status(200).json(placesWithDetails);
+    res.status(200).json(ss);
 
-    ///have to plan trip
+   
      
 
 });

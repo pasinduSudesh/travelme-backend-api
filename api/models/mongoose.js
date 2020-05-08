@@ -84,45 +84,46 @@ exports.saveLinksToReview = function(links){
 
 
 exports.savePlaceDet = function(places){
-    return new Promise((resolve,reject)=>{
-        var errors = null
-        places.forEach(async (place)=>{
-            try{
-                var placeDetFromGoogle =  await api.googlePlaceAPI(place['place_name']);
+    return new Promise(async (resolve,reject)=>{
+        try{
+            for(var x=0; x<places.length;x++){
+                var placeDetFromGoogle =  await api.googlePlaceAPI(places[x]['place_name']);
                 var hasPlace = await hasPlaceInDB(placeDetFromGoogle['candidates'][0]['place_id']);
-            }catch(err){
-                errors = err
+                if(! hasPlace){
+                    await savePlace(placeDetFromGoogle,places[x])
+                }
             }
-            if(! hasPlace){
-                var place = new Places({
-                    placeName: placeDetFromGoogle['candidates'][0]['name'],
-                    address:placeDetFromGoogle['candidates'][0]['formatted_address'],
-                    bestReview: 'Dest Place for Travel',
-                    placeId:placeDetFromGoogle['candidates'][0]['place_id'],
-                    img:place['img'],
-                    lat:placeDetFromGoogle['candidates'][0]['geometry']['location']['lat'],
-                    lng:placeDetFromGoogle['candidates'][0]['geometry']['location']['lng'],
-                    negativePresentage:0,
-                    positivePresentage:0,
-                    naturalPresentage:0,
-                    rating:0,
-                    totalPolarity:0,
-                    totalReviews:0
-                });
-                place.save().then(response=>{}).catch(err=>{errors = err});
-                
-            }
-        });
-
-        if(errors === null){
-            resolve(true);
-        }else{
-            reject(new Error(errors));
+            resolve();
+        }catch(err){
+            reject(new Error(err));
         }
+
+        
     });
 
-
-
+    function savePlace(placeDetFromGoogle,place){
+        return new Promise((resolve, reject) => {
+            var placeDet = new Places({
+                placeName: placeDetFromGoogle['candidates'][0]['name'],
+                address:placeDetFromGoogle['candidates'][0]['formatted_address'],
+                bestReview: 'Dest Place for Travel',
+                placeId:placeDetFromGoogle['candidates'][0]['place_id'],
+                img:place['img'],
+                lat:placeDetFromGoogle['candidates'][0]['geometry']['location']['lat'],
+                lng:placeDetFromGoogle['candidates'][0]['geometry']['location']['lng'],
+                negativePresentage:0,
+                positivePresentage:0,
+                naturalPresentage:0,
+                rating:0,
+                totalPolarity:0,
+                totalReviews:0,
+                analyseState:false,
+                time:2
+                
+            });
+            placeDet.save().then(response=>{console.log('place saved');resolve();}).catch(err=>{reject(new Error(err))});            
+        });
+    }
 }
 
 function hasPlaceInDB(placeId){
@@ -339,7 +340,8 @@ function addSentimentDet(oldData,newData){
             totalReviews:oldData['totalReviews']+newData['totalReviews'],
             bestReview:newData['bestReview'],
             totalPolarity: newData['totalPolarity'],
-            rating: newData['totalPolarity']*100
+            rating: (newData['totalPolarity']*100)/newData['totalReviews'],
+            analyseState:true
     
             }
 

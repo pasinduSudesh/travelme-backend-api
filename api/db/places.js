@@ -13,7 +13,9 @@ const placeSchema = mongoose.Schema({
     naturalPresentage:Number,
     rating:Number,
     totalPolarity:Number,
-    totalReviews:Number
+    totalReviews:Number,
+    analyseState:Boolean,
+    time: Number
 
 
 });

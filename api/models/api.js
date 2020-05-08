@@ -84,3 +84,26 @@ function getSearchResult(jsonBody,searchType){
     });
     return result;
 }
+
+// *****************************************************/
+exports.derectionAPI = function(start,end){
+    return new Promise((resolve, reject) => {
+        var API_KEY = config['DIRECTION_API_KEY'];
+        var query = `https://www.mapquestapi.com/directions/v2/route?key=${API_KEY}&from=${start}&to=${end}&outFormat=json&ambiguities=ignore&routeType=fastest&doReverseGeocode=false&enhancedNarrative=false&avoidTimedConditions=false&unit=k`;
+        request.get(query,function(err,response,body){
+            if(err){
+                console.log(err.message)
+                reject(new Error(err));
+
+            }else{
+                console.log(response.statusCode)
+                if(response.statusCode === 200){
+                    resolve(JSON.parse(body))
+                }else{
+                    reject(new Error('Error while connectiong place API'))
+                }
+            }
+        });
+    });
+}
+// *****************************************************/

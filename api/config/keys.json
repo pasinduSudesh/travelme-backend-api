@@ -9,5 +9,6 @@
     "SEARCH_FILTER" : [
          ["https://www.tripadvisor.com/Attractions","Activities"]
 
-    ]
+    ],
+    "DIRECTION_API_KEY":"alCdGJZZzNDQOXuMXM312jBealo1XDjG"
 }
