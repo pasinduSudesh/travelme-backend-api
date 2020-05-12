@@ -6,22 +6,28 @@ const router = express.Router();
 const fb = require('../models/firebase');
 // const mongo = require('../db/test'   );
 const dd = require('../models/mongoose');
-const Test = require('../db/te')
+const places = require('../db/places')
 var file = require('../models/readJsonFile');
 var patha =  require('../models/path');
 var api = require('../models/api');
+var spider = require('../models/spider')
 
 router.get('/',async function(req,res,next){
 
-    var s = {a:12}
-    s['b'] = "ff";
-    console.log(s)
-for (var i =0;i<10;i++){
+var s =await api.getCrawlURL("matara",1);
+console.log(s);
 
-    var sas = await api.derectionAPI('6.0250143,80.2180408','6.0400638,80.1985902');
-    console.log(sas);
-}
-res.send("dddd");
+await spider.hotelSpider(['https://www.tripadvisor.com/Hotels-g297896-Galle_Galle_District_Southern_Province-Hotels.html'],3)
+
+//     var s = {a:12}
+//     s['b'] = "ff";
+//     console.log(s)
+// for (var i =0;i<10;i++){
+
+//     var sas = await api.derectionAPI('6.0250143,80.2180408','6.0400638,80.1985902');
+//     console.log(sas);
+// }
+// res.send("dddd");
 
 // console.log("dddddddddddddddddddddddddddddddddddddddddd");
 // console.log(sas);

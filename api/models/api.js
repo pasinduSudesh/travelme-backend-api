@@ -77,8 +77,14 @@ function getSearchResult(jsonBody,searchType){
         var splitedLink = link.split("-")
         // console.log(config['SEARCH_FILTER'][searchType][0])
         // splitedLink[0] == config['SEARCH_FILTER']['${searchType}'][0]
-        if((splitedLink[0] == config['SEARCH_FILTER'][searchType][0]) && (splitedLink[2] == config['SEARCH_FILTER'][searchType][1]) && splitedLink.length == 4 ){
-            result.push(link)
+        if(searchType === 0){
+            if((splitedLink[0] == config['SEARCH_FILTER'][searchType][0]) && (splitedLink[2] == config['SEARCH_FILTER'][searchType][1]) && splitedLink.length == 4 ){
+                result.push(link)
+            }
+        }else if(searchType === 1){
+            if((splitedLink[0] === config['SEARCH_FILTER'][searchType][0]) && (splitedLink[3] === config['SEARCH_FILTER'][searchType][1])){
+                result.push(link)
+            }
             // console.log(result);
         }
     });

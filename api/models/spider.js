@@ -7,6 +7,24 @@ const db = require('mongoose');
 var Reviews = require('../db/reviews')
 var api = require('../models/api');
 
+exports.hotelSpider = function(url,limit){
+    //run review sopider
+    //input urls as a list
+    return new Promise(async (resolve,reject)=>{
+        try{
+            console.log("1111111111111111")
+            const urlString = await urlToString(url);
+            console.log("22222222222222222")
+            const spider = await runSpiderHotel('hotelSpiderRunner.py',urlString,limit);
+            console.log("222233333333333333333333333333")
+            resolve(spider)
+        }
+        catch{
+            reject(new Error('Error when running spider'))
+        }
+    });
+    
+}
 
 exports.runReviewSpider = function(url){
     //run review sopider
@@ -77,9 +95,32 @@ function runSpider(spiderRunner,urlString){
             }
         });
     });
-
-
 }
+
+function runSpiderHotel(spiderRunner,urlString,limit){
+    //run python script for run crawler
+    
+    let options = {
+            
+        pythonOptions: ['-u'], 
+        scriptPath: 'pythonScripts',
+        args: [urlString,limit]
+    };
+    return new Promise((resolve,reject)=>{
+        PythonShell.run(spiderRunner, options, function (err, results) {
+            if(err){
+                console.log("errrr")
+                console.log(err)
+                reject(new Error(err))
+            }else{
+                console.log(results)
+                resolve(results,"ooool")
+            }
+        });
+    });
+}
+
+
 
 // ******************************************
 //run crawl spider and save result in to database

@@ -13,8 +13,12 @@ router.get('/',function(req,res,next){
             },
             {
                 "Method":"GET",
-                "URL": "https://noderestapp.azurewebsites.net/crawlreviews/<place_name>",
-                "Responce": "Return reviews of nearest tourist attraction placess for given place"
+                "URL": "https://noderestapp.azurewebsites.net/planTrip",
+                "Request":{
+                    "place":"place name",
+                    "days":"number of days"
+                },
+                "Responce": "Return planed trip"
             },
             {
                 "Method":"GET",

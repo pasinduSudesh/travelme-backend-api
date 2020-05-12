@@ -3,27 +3,55 @@ const fs  = require('fs')
 const router = express.Router();
 const firebase = require('firebase-admin');
 
-const db = require('../models/firebase')
+const db = require('../models/firebase');
+const places = require('../db/places');
 
 
 router.get('/',function(req,res,next){
-     // var placeName = "place_1"
-    var ref = firebase.database().ref('travelme/analyzed_places');
+     
 
-    ref.orderByChild("place").on("value", function(snapshot) {
-      var val = snapshot.val();
-        var keys = Object.keys(val)
-        console.log(keys);
-        var  places = [];
-        keys.forEach(key=>{
-          places.push(val[key])
-        })
-        res.status(200).json({
-          bestPlaces:places
-        })
-      }, function (errorObject) {
-        console.log("The read failed: " + errorObject.code);
-      });
+  places.find().sort({rating:-1}).limit(3).exec()
+  .then(resp=>{
+    var places = []
+    resp.forEach(place=>{
+      console.log(place)
+      var det = {
+        description:place.bestReview,
+        img:place.img,
+        place:place.placeName,
+        rating:place.rating
+      }
+      places.push(det)
+    });
+    res.status(200).json({
+      "bestPlaces":places
+    })
+
+  })
+  .catch(err=>{
+    res.status(500).json({
+      "error":{
+        "message":err.msg
+      }
+    })
+  })
+
+    // var ref = firebase.database().ref('travelme/analyzed_places');
+
+    // ref.orderByChild("place").on("value", function(snapshot) {
+    //   var val = snapshot.val();
+    //     var keys = Object.keys(val)
+    //     console.log(keys);
+    //     var  places = [];
+    //     keys.forEach(key=>{
+    //       places.push(val[key])
+    //     })
+    //     res.status(200).json({
+    //       bestPlaces:places
+    //     })
+    //   }, function (errorObject) {
+    //     console.log("The read failed: " + errorObject.code);
+    //   });
 })
 
 module.exports = router

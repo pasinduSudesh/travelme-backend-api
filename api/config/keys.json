@@ -3,11 +3,14 @@
     "PLACE_API_KEY":"AIzaSyB1JrDg3JmovrJeUe2zkvH9LW8ECXXQav4",
     "CX" : "005998861107613551859:k7sz2pz1t1w",
     "PLACE_TYPES" :[
-        "Attractions Activities"
+        "Attractions Activities",
+        "Hotels"
         ],
         
     "SEARCH_FILTER" : [
-         ["https://www.tripadvisor.com/Attractions","Activities"]
+         ["https://www.tripadvisor.com/Attractions","Activities"],
+         ["https://www.tripadvisor.com/Hotels","Hotels.html"]
+
 
     ],
     "DIRECTION_API_KEY":"alCdGJZZzNDQOXuMXM312jBealo1XDjG"

@@ -124,7 +124,10 @@ router.post('/',async function(req,res,next){
 
     var ss = tripPlan.timePlan(trip['trip'],trip['travelDetails'],days)
 
-    res.status(200).json(ss);
+    res.status(200).json({
+        "trip":ss,
+        "distances":trip['travelDetails']   
+    });
 
    
      

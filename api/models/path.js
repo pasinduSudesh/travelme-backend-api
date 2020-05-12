@@ -157,10 +157,11 @@ exports.timePlan = function (trip,travelDet,dates){
             // console.log(totalTime,"fff ");
         }        
     }
-    console.log(totalTime,"totoltime",dates*day*0.7);
-    if(totalTime < dates*day*0.7){
+    console.log(totalTime,"totoltime",dates*day*1.2);
+    if(totalTime < dates*day*1.2){
         console.log("aaaa")
         var maxpd = Math.round(trip.length/dates);
+        
         console.log(maxpd,"max places")
         // ssssssss
         var placeCount = 0

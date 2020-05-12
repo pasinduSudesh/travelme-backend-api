@@ -25,7 +25,8 @@
       "crawlerResults/reviewSpiderResults.json",
       "crawlerResults/placeSpiderResults.json",
       "sentimentJson/sentimentResults.json",
-      "sentimentJson/reviewsForSentiment.json"
+      "sentimentJson/reviewsForSentiment.json",
+      "crawlerResults/hotelResults.json"
     ]
   }
 }
