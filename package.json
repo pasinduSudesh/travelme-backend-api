@@ -24,9 +24,9 @@
     "ignore": [
       "crawlerResults/reviewSpiderResults.json",
       "crawlerResults/placeSpiderResults.json",
+      "crawlerResults/hotelResults.json",
       "sentimentJson/sentimentResults.json",
-      "sentimentJson/reviewsForSentiment.json",
-      "crawlerResults/hotelResults.json"
+      "sentimentJson/reviewsForSentiment.json"      
     ]
   }
 }

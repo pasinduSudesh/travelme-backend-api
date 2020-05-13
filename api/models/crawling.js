@@ -46,3 +46,50 @@ exports.crawlWithPlaceName =  function(place){
 
 
 }
+
+
+exports.crawlHotelsWithPlaceName = function(place){
+    return new Promise(async (resolve, reject) => {
+        try{
+            var urls = await searchResult.getCrawlURL(place,1);
+            console.log(urls);
+            var hasCrawled = await db.checkHotelCrawlUrlInDb(urls[0]);
+            console.log(hasCrawled)
+            if(hasCrawled){
+                resolve("CRAWLED PREVIOUSLY")
+            }else{
+                // console.log("CRAWLING")
+                
+                await spider.hotelSpider(urls,20);
+                // console.log("SAving Urls")
+                console.log(urls);
+                await db.saveCrawlUrl(urls[0])
+                var hotelDet = await readFile.readFile('crawlerResults/hotelResults.json');
+                for(var x=0;x<hotelDet['hotelDetails'].length;x++){
+                    var fullDet = await searchResult.googlePlaceAPI(hotelDet['hotelDetails'][x]['hotelName']+","+hotelDet['hotelDetails'][x]['address']);
+                    // console.log(fullDet);
+                    if(fullDet['status'] === 'OK'){
+                        var HotelDetailsToSave = {
+                            name:hotelDet['hotelDetails'][x]['hotelName'],
+                            address:hotelDet['hotelDetails'][x]['address'],
+                            img:hotelDet['hotelDetails'][x]['imageUrl'],
+                            rating:parseFloat(hotelDet['hotelDetails'][x]['rating']),
+                            facilities:hotelDet['hotelDetails'][x]['facilities'],
+                            placeId:fullDet['candidates'][0]['place_id'],
+                            lat:fullDet['candidates'][0]['geometry']['location']['lat'],
+                            lng:fullDet['candidates'][0]['geometry']['location']['lng'],
+                            latLng:fullDet['candidates'][0]['geometry']['location']['lat'].toString()+","+fullDet['candidates'][0]['geometry']['location']['lng'].toString()
+                        }
+                        await db.saveHotelDetails(HotelDetailsToSave)
+                    }
+                    else{
+                        console.log("A")
+                    }
+                }
+                resolve("NOW CRAWLED")
+            } 
+        }catch(err){
+            reject(new Error(err));
+        }
+    });
+}

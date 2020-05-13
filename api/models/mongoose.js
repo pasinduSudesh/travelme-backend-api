@@ -6,6 +6,9 @@ const LinksToReview = require('../db/linksToReview');
 const PlaceCrawlerResult = require('../db/placeCrawlerResults');
 const Places = require('../db/places');
 const Reviews = require('../db/reviews');
+const HotelCrawlerResult = require('../db/hotelCrawlerResults');
+const Hotels = require('../db/hotels');
+const test = require('../db/te');
 
 // ***********************************************************************************
 //  PLACE CRAWLER ACTIVIRES
@@ -100,7 +103,7 @@ exports.savePlaceDet = function(places){
 
         
     });
-
+ 
     function savePlace(placeDetFromGoogle,place){
         return new Promise((resolve, reject) => {
             var placeDet = new Places({
@@ -374,3 +377,74 @@ function saveData(data,placeId){
 
 
 // ###################################################################################
+
+// ######################################################################################
+// hotes
+// ######################################################################################
+exports.checkHotelCrawlUrlInDb = function(url){
+    return new Promise((resolve, reject) => {
+        HotelCrawlerResult.find({url:url})
+        .then(doc=>{
+            if(doc.length >=1){
+                resolve(true);
+            }else{
+                resolve(false);
+            }
+        })
+        .catch(err=>{
+            resolve(false);
+        })
+    });
+}
+
+exports.saveHotelDetails = function(data){
+    return new Promise((resolve, reject) => {
+        var hotel = new Hotels(data);
+        hotel.save()
+        .then(doc=>{
+            resolve("OK")
+        })
+        .catch(err=>{
+            if(err.message.includes("E11000 duplicate key error collection")){
+                resolve("HAS_DUPLICATE");
+            }else{
+                reject(new Error(err));
+            }
+        })
+    });
+}
+
+exports.saveCrawlUrl = function(url){
+    return new Promise((resolve, reject) => {
+        var hcr = new HotelCrawlerResult({url:url});
+        hcr.save()
+        .then(doc=>{
+            resolve("OK")
+        })
+        .catch(err=>{
+            if(err.message.includes("E11000 duplicate key error collection")){
+                resolve("HAS_DUPLICATE");
+            }else{
+                reject(new Error(err));
+            }
+        })
+    });
+}
+
+exports.getNearestHotels = function(lat,lng){
+    return new Promise(async (resolve, reject) => {
+        Hotels.find(
+            {
+                lat:{$gt:lat-0.3 , $lt: lat+0.3},
+                lng:{$gt:lng-0.3 , $lt: lng+0.3}
+            }
+        )
+        .sort({rating:-1})                
+        .limit(20)
+        .exec()
+        .then(res=>{resolve(res)}).catch(err=>{reject(new Error(err))});
+       
+    });
+}
+// ######################################################################################
+

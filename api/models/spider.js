@@ -109,12 +109,12 @@ function runSpiderHotel(spiderRunner,urlString,limit){
     return new Promise((resolve,reject)=>{
         PythonShell.run(spiderRunner, options, function (err, results) {
             if(err){
-                console.log("errrr")
+                // console.log("errrr")
                 console.log(err)
                 reject(new Error(err))
             }else{
                 console.log(results)
-                resolve(results,"ooool")
+                resolve(results)
             }
         });
     });

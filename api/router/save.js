@@ -11,13 +11,36 @@ var file = require('../models/readJsonFile');
 var patha =  require('../models/path');
 var api = require('../models/api');
 var spider = require('../models/spider')
+var cr = require('../models/crawling')
+var teDB = require('../db/te')
 
 router.get('/',async function(req,res,next){
 
-var s =await api.getCrawlURL("matara",1);
-console.log(s);
+    a = new Date().toLocaleTimeString();
+    var ss = await cr.crawlHotelsWithPlaceName("galle fort sri lanka");
+    b = new Date().toLocaleTimeString();
+    console.log(a,b)
+    res.send(ss)
+    // try{
+        
+    // }catch(err){
+    //     res.send(err)
+    // }
 
-await spider.hotelSpider(['https://www.tripadvisor.com/Hotels-g297896-Galle_Galle_District_Southern_Province-Hotels.html'],3)
+    // d.save().then(doc=>{console.log(doc)}).catch(er=>{console.log(er.message)})
+
+
+    // console.log(await api.googlePlaceAPI("601/45b, Jaya Mawatha, Air Port Road, Anuradhapura 50000 Sri Lanka"))
+//     a = new Date().toLocaleTimeString();
+// await cr.crawlHotelsWithPlaceName("anuradhapura")
+// b = new Date().toLocaleTimeString();
+// console.log(a,b)
+// var s =await api.getCrawlURL("matara",1);
+// console.log(s);
+
+// await spider.hotelSpider(s,30)
+// b = new Date().toLocaleTimeString();
+// console.log(a,b)
 
 //     var s = {a:12}
 //     s['b'] = "ff";

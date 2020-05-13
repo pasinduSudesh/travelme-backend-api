@@ -4,7 +4,7 @@ import datetime
 
 class HotelSpider(scrapy.Spider):
     name = "hotels"
-    start_urls = ['https://www.tripadvisor.com/Hotels-g297896-Galle_Galle_District_Southern_Province-Hotels.html']
+    start_urls = []
     linkList = []
     index = 1
     data = {}
@@ -18,7 +18,9 @@ class HotelSpider(scrapy.Spider):
 
     def parse(self, response):
         # self.currentDT.append(datetime.datetime.now().time())
+        
         if(response.request.url in self.start_urls):
+            print("InSide")
             mainDev = response.css('div.ui_column.is-8.main_col.allowEllipsis')
             links = mainDev.css('a.property_title.prominent::attr(href)').extract()
             # name = response.css('.ZVAUHZqh').extract()
@@ -33,6 +35,7 @@ class HotelSpider(scrapy.Spider):
                 print("FAIL")
 
         else:
+            print("inside2")
             name = response.css('#HEADING::text').extract()
             rating = response.css('.hotels-hotel-review-about-with-photos-Reviews__overallRating--vElGA::text').extract()
             facilities = response.css('.hotels-hr-about-amenities-Amenity__amenity--3fbBj::text').extract()
@@ -45,7 +48,8 @@ class HotelSpider(scrapy.Spider):
                 if "background-image:none" not in img:
                     images.append((img))
 
-            # print(images)
+            # print("111")
+            # print(name)
             if(len(rating)>0 and len(name)>0 and len(address)>0 and len(images)>0):
                 imgUrl = images[0].split('"')
 
@@ -57,7 +61,7 @@ class HotelSpider(scrapy.Spider):
                     "address":address[0],
                     "imageUrl":imgUrl[1],
                 })
-            yield {"name":name,"rating":rating,"fac":facilities,"address":address,"imgUrl":imgUrl[1]}
+            yield {"name":name,"rating":rating,"fac":facilities,"address":address}
 
             if(self.index < len(self.linkList) and self.index < self.limit):
                 self.index += 1
