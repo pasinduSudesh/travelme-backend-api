@@ -29,8 +29,35 @@ router.post('/',async function(req,res,next){
         }
         console.log(distanceList);
 
-        minHotel = null
-        minDis
+        
+        var minDis = distanceList[0].distance;
+        var min2Dis = distanceList[0].distance;
+        var min3Dis = distanceList[0].distance;
+        var minID,min2ID,min3ID;
+        distanceList.forEach(e=>{
+            if(e.distance<=minDis){
+                minDis = e.distance;
+                minID = e.id;
+            }
+        })
+        distanceList.forEach(e=>{
+            if(minDis<e.distance && e.distance<=min2Dis){
+                min2Dis = e.distance;
+                min2ID = e.id;
+            }
+        })
+        distanceList.forEach(e=>{
+            if(min2Dis<e.distance && e.distance<=min3Dis){
+                min3Dis = e.distance;
+                min3ID = e.id
+            }
+        })
+
+        console.log(minDis,min2Dis,min3Dis);
+        console.log(minID,min2ID,min3ID);
+        var sss = await db.getHotelsWithID(minID,min2ID,min3ID);
+        console.log(sss)
+
 
         // s = distanceList[0];
 

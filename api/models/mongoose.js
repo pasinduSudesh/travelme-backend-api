@@ -446,5 +446,15 @@ exports.getNearestHotels = function(lat,lng){
        
     });
 }
+
+exports.getHotelsWithID = function(id1,id2,id3){
+    return new Promise((resolve, reject) => {
+        Hotels.find({
+            $or:[{placeId:id1},{placeId:id2},{placeId:id3}]
+        })
+        .then(doc=>{resolve(doc)})
+        .catch(err=>{reject(err)})
+    });
+}
 // ######################################################################################
 
