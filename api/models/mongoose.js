@@ -459,4 +459,27 @@ exports.getHotelsWithID = function(id1,id2,id3){
     });
 }
 // ######################################################################################
+// ######################################################################################
+//GET PLACE REVIWES ACTIVITIES
+// ######################################################################################
+exports.getReviewsWithPlaceId = function(placeId){
+    return new Promise((resolve, reject) => {
+        Reviews.find({
+            'placeId':placeId
+        })
+        .then(docs=>resolve(docs))
+        .catch(err=> reject(new Error(err)))
+    });
+}
+
+exports.getPlacesWithPlaceId = function(placeId){
+    return new Promise((resolve, reject) => {
+        Places.find({
+            'placeId':placeId
+        })
+        .then(docs=>resolve(docs))
+        .catch(err=> reject(new Error(err)))
+    });
+}
+// ######################################################################################
 

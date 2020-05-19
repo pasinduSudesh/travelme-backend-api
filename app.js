@@ -36,6 +36,7 @@ const bestPlaceRouter = require('./api/router/bestPlaces');
 const createTripPlanRouter = require('./api/router/tripPlan');
 const searchHotelRouter = require('./api/router/searchHotel');
 const nearestHotelRouter = require('./api/router/nearestHotels');
+const placeReviewRouter = require('./api/router/placeReviews');
 
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({extended:false}));
@@ -63,6 +64,7 @@ app.use('/bestPlaces',bestPlaceRouter);
 app.use('/planTrip',createTripPlanRouter);
 app.use('/searchHotel',searchHotelRouter);
 app.use('/nearestHotels',nearestHotelRouter);
+app.use('/placeReviews',placeReviewRouter);
 
 
 //handdle 404 error 
