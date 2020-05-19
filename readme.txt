@@ -25,3 +25,5 @@ require
 {
     "name":"name_of_the_place"
 }
+
+// "test": "echo \"Error: no test specified\" && exit 1",

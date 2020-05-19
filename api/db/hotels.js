@@ -8,7 +8,9 @@ const hotelSchema = mongoose.Schema({
     facilities:Array,
     placeId:{type:String,unique:true},
     lat:Number,
-    lng:Number
+    lng:Number,
+    latLng:String,
+    hotelUrl:String
 });
 
 module.exports = mongoose.model('Hotels',hotelSchema,'Hotels')

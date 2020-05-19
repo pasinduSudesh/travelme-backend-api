@@ -72,6 +72,7 @@ exports.crawlHotelsWithPlaceName = function(place){
                         var HotelDetailsToSave = {
                             name:hotelDet['hotelDetails'][x]['hotelName'],
                             address:hotelDet['hotelDetails'][x]['address'],
+                            hotelUrl:hotelDet['hotelDetails'][x]['hotelUrl'],
                             img:hotelDet['hotelDetails'][x]['imageUrl'],
                             rating:parseFloat(hotelDet['hotelDetails'][x]['rating']),
                             facilities:hotelDet['hotelDetails'][x]['facilities'],

@@ -53,10 +53,9 @@ router.post('/',async function(req,res,next){
             }
         })
 
-        console.log(minDis,min2Dis,min3Dis);
-        console.log(minID,min2ID,min3ID);
-        var sss = await db.getHotelsWithID(minID,min2ID,min3ID);
-        console.log(sss)
+        
+        var h = await db.getHotelsWithID(minID,min2ID,min3ID);
+        res.status(200).json(h)
 
 
         // s = distanceList[0];
@@ -73,7 +72,7 @@ router.post('/',async function(req,res,next){
         // console.log(distanceList);
 
         // for(var a=0;a<distanceList.length;a++){
-        //     distanceList[a] ==s
+        //     distanceList[a] ==s 
         // }
 
         // console.log(distanceList);

@@ -60,6 +60,7 @@ class HotelSpider(scrapy.Spider):
                     "facilities":facilities,
                     "address":address[0],
                     "imageUrl":imgUrl[1],
+                    'hotelUrl':self.linkList[self.index-1]
                 })
             yield {"name":name,"rating":rating,"fac":facilities,"address":address}
 
