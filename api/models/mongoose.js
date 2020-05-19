@@ -298,21 +298,23 @@ exports.saveSentiments = function(data){
     return new Promise(async (resolve, reject) => {
         try{
             var placesAlaysed = []
+            console.log("******************************SAVING SENTIMENT******************")
             for(var i = 0;i<data['analyse'].length;i++){
-                var placeDet = await api.googlePlaceAPI(data['analyse'][i]['placeName']);
-                if(placeDet['status'] === 'OK'){
-                    console.log("ss");
-                    var placeId = placeDet['candidates'][0]['place_id'];
-                    console.log(placeId), "placeid";
-                    var placeDet = await getPlaceDet(placeId);
-                    console.log(placeDet);
-                    console.log(data['analyse'][i])
-                    
-                    var saveDat = addSentimentDet(placeDet,data['analyse'][i])
-                    console.log(saveDat);
-                    placesAlaysed.push(saveDat);
-                    await saveData(saveDat,placeId);
-                }
+                // var placeDet = await api.googlePlaceAPI(data['analyse'][i]['placeName']);
+               
+                // console.log("ss");
+                // var placeId = placeDet['candidates'][0]['place_id'];
+                var placeId = data['analyse'][i]['placeID'];
+                console.log(placeId,"placeId") ;
+                var placeDet = await getPlaceDet(placeId);
+                console.log(placeDet);
+                console.log(data['analyse'][i])
+                
+                var saveDat = addSentimentDet(placeDet,data['analyse'][i])
+                console.log(saveDat);
+                placesAlaysed.push(saveDat);
+                await saveData(saveDat,placeId);
+                
             }
             resolve(placesAlaysed);
         }catch (err){

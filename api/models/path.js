@@ -198,10 +198,10 @@ exports.timePlan = function (trip,travelDet,dates){
                         positivePresentage:trip[x]['positivePresentage'],
                         naturalPresentage:trip[x]['naturalPresentage'],
                         rating:trip[x]['rating'],
-                        startTimeH:startTimeH,
-                        startTimeM:startTimeM,
-                        endTimeH:endTimeH,
-                        endTimeM:endTimeM,
+                        startTimeH:getShowTimeH(startTimeH),
+                        startTimeM:getShowTimeM(startTimeM),
+                        endTimeH:getShowTimeH(endTimeH),
+                        endTimeM:getShowTimeM(endTimeM),
                         latLng:trip[x]['lat']+","+trip[x]['lng'],
                         day:currentDay
                        }
@@ -269,10 +269,10 @@ exports.timePlan = function (trip,travelDet,dates){
                         positivePresentage:trip[x]['positivePresentage'],
                         naturalPresentage:trip[x]['naturalPresentage'],
                         rating:trip[x]['rating'],
-                        startTimeH:startTimeH,
-                        startTimeM:startTimeM,
-                        endTimeH:endTimeH,
-                        endTimeM:endTimeM,
+                        startTimeH:getShowTimeH(startTimeH),
+                        startTimeM:getShowTimeM(startTimeM),
+                        endTimeH:getShowTimeH(endTimeH),
+                        endTimeM:getShowTimeM(endTimeM),
                         latLng:trip[x]['lat']+","+trip[x]['lng'],
                         day:currentDay
                        }
@@ -315,6 +315,23 @@ function addTimes(ch,cm,m){
     }
     else{
         return {h:ch+hours,m:mins}
+    }
+}
+
+function getShowTimeH(h){
+    
+    if(h<10){
+        return '0'+h.toString();
+    }else{
+        return h.toString()
+    }
+}
+
+function getShowTimeM(m){
+    if(m === 0){
+        return "00";
+    }else if(m === 30){
+        return "30";
     }
 }
 

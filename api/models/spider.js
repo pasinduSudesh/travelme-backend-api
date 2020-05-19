@@ -162,11 +162,13 @@ exports.crawlReviewWithUrls =  function(urls){
                             
                         }
                         //save to db
-                        await saveToDB(listOfPlaces[index],reviewArray)
+                        var pId = await getPlaceId(listOfPlaces[index])
+                        await saveToDB(listOfPlaces[index],reviewArray,pId)
                         allReviews.push({
                             place:listOfPlaces[index],
                             reviews:reviewArray,
-                            analys_state:false
+                            analys_state:false,
+                            placeId:pId
                         });
                     });                    
                     resolve(allReviews);
@@ -195,13 +197,14 @@ exports.crawlReviewWithUrls =  function(urls){
         }); 
     }
 
-    function saveToDB(place,reviews){
+    function saveToDB(place,reviews,id){
         return new Promise(async (resolve, reject) => {
             try{
                 var r = new Reviews({
                     analysState: false,
                     placeName: place,                        
-                    reviews:reviews
+                    reviews:reviews,
+                    placeId:id
                 });
                 r.save().then(resp=>{
                     resolve()
@@ -209,6 +212,20 @@ exports.crawlReviewWithUrls =  function(urls){
                     reject(new Error(err))
                 });
                 
+            }catch(err){
+                reject(new Error(err))
+            }
+        });
+    }
+
+    function getPlaceId(placename){
+        return new Promise(async (resolve, reject) => {
+            try{
+                var placeDetails = await api.googlePlaceAPI(placename);
+                if(placeDetails['status'] === 'OK'){
+                    var placeId = placeDetails['candidates'][0]['place_id']
+                    resolve(placeId)
+                }else{resolve("NO_ID")}
             }catch(err){
                 reject(new Error(err))
             }

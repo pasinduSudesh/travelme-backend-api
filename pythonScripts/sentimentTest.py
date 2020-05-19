@@ -33,6 +33,7 @@ def getPresentage(total,count):
     
 def sentimentAnalys(data):
     placesNames = []
+    placeIds = []
     positive = []
     negative = []
     natural= []
@@ -50,6 +51,7 @@ def sentimentAnalys(data):
         polarityArray = []
         subjectivityArray = []
         placesNames.append(reviewsDet["place"])
+        placeIds.append(reviewsDet["placeId"])
         maxPolarity = 0
         bestReview = None
         for review in reviewsDet["reviews"]:
@@ -95,6 +97,7 @@ def sentimentAnalys(data):
     for x in range(len(placesNames)):
         data.append({
             "placeName":placesNames[x],
+            "placeID":placeIds[x],
             "positivePresentage":positive[x],
             "negativePresentage":negative[x],
             "naturalPresentage":natural[x],
