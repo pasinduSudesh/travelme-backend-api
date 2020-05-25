@@ -3,8 +3,9 @@ const fs  = require('fs')
 const router = express.Router();
 const fb = require('firebase-admin');
 
-const db = require('../models/firebase');
+const db = require('../models/mongoose');
 const api = require('../models/api');
+
 
 router.post('/',async function(req,res,next){
 
@@ -16,14 +17,14 @@ router.post('/',async function(req,res,next){
         var placeDetails = await api.googlePlaceAPI(place);
         var reviewData = {
             address: placeDetails['candidates'][0]['formatted_address'],
-            name: placeDetails['candidates'][0]['name'],
+            placeName: placeDetails['candidates'][0]['name'],
             types: placeDetails['candidates'][0]['types'],
-            place_id: placeDetails['candidates'][0]['place_id'],
+            placeId: placeDetails['candidates'][0]['place_id'],
             lat: placeDetails['candidates'][0]['geometry']['location']['lat'],
             lng: placeDetails['candidates'][0]['geometry']['location']['lng'],
-            user_name: name,
+            userName: name,
             review: review,
-            analyse_state: false
+            analyseState: false
         }
         var isSaveToDB = await db.saveReviewToDB(reviewData);
         res.status(200).json({

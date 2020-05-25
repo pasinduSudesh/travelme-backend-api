@@ -9,7 +9,7 @@ const Reviews = require('../db/reviews');
 const HotelCrawlerResult = require('../db/hotelCrawlerResults');
 const Hotels = require('../db/hotels');
 const test = require('../db/te');
-
+const UserReview = require('../db/userReviews')
 // ***********************************************************************************
 //  PLACE CRAWLER ACTIVIRES
 // ***********************************************************************************
@@ -21,14 +21,17 @@ exports.checkUrlInDB = function(url){
         PlaceCrawlerResult.find({
             url:url
         }).then(response=>{
-            // console.log(response);
+            console.log(response);
             // console.log(response.length);
             if(response.length === 1){
                 resolve(response[0]['results']);
             }else{
                 resolve(false);
             }
-        }).catch(err=>{reject(new Error(err))})
+        }).catch(err=>{
+            console.log(err.message)
+            reject(new Error(err))
+        })
     });
 }
 
@@ -482,4 +485,85 @@ exports.getPlacesWithPlaceId = function(placeId){
     });
 }
 // ######################################################################################
+// ######################################################################################
+//ACTIVITIES FOR CUSTOME TRIP PLAN
+// ######################################################################################
+exports.getPlacesForCustomTripPlan = function(placeIds){
+    var lis = []
+    placeIds.forEach(p => {
+        lis.push({placeId:p})
+    });
+    
+    return new Promise((resolve, reject) => {
+        Places.find({
+            $or:lis
+        })
+        .then(doc=>{console.log(doc);resolve(doc)})
+        .catch(err=>reject(new Error(err)))
+    });
+    // {
+    //     '$or':[{placeId:'5ec3650dc265cd37041e6179'},{placeId:'5ec36505c265cd37041e6175'},{placeId:'5ec3650ec265cd37041e617a'}]
+    // }
 
+}
+// ######################################################################################
+// ######################################################################################
+// GET PLACES FUNCTIONS
+// ######################################################################################
+
+exports.getAllPlaces = function(){
+    return new Promise((resolve, reject) => {
+        Places.find(
+            {analyseState: true}
+        )
+        .select('placeName -_id placeId')
+        .then(doc=>resolve(doc))
+        .catch(err=>reject(new Error(err)))        
+    });
+}
+
+exports.getNearestPlacesWithLatLng = function(lat,lng,r){
+    return new Promise((resolve, reject) => {
+        Places.find({
+            lat:{$gt:lat-r , $lt: lat+r},
+            lng:{$gt:lng-r , $lt: lng+r},
+            analyseState: true
+        })
+        .sort('rating')
+        .exec()
+        .then(res=>{resolve(res)}).catch(err=>{reject(new Error(err))});
+        // resolve();
+    });
+}
+// ######################################################################################
+
+exports.saveReviewToDB = function(reviews){
+    return new Promise((resolve, reject) => {
+        var rr = new UserReview(reviews)
+        rr.save()
+        .then(doc=>{resolve()})
+        .catch(err=>{reject(new Error(err))})
+
+        
+    });
+}
+
+exports.testfunctionForMocha = function(url){
+    return new Promise((resolve,reject)=>{
+        PlaceCrawlerResult.find({
+            url:url
+        }).then(response=>{
+            // console.log(response);
+            // console.log(response.length);
+            if(response.length > 0){
+                resolve(true);
+            }else{
+                resolve(false);
+            }
+        }).catch(err=>{
+            
+            reject(err.message)
+        })
+    });
+
+}

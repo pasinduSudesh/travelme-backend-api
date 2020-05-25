@@ -128,10 +128,16 @@ exports.fullTripPlan = function(placeIdOrder,placeDetList){
                 console.log(t);
                 
                 var time = parseInt(t[0])*60*60 + parseInt(t[1])*60 + parseInt(t[2]);
-                console.log(time);
+                console.log(time,"time");
                 travelDet.push({distance:distance, time:time})
                 trip.push(place1);
                 console.log("pushed");
+                // 
+                if(i === placeIdOrder.length-2){
+                    trip.push(place2)
+
+                }
+                // 
             }            
             resolve({trip:trip,travelDetails:travelDet});
         }catch(err){
@@ -190,6 +196,7 @@ exports.timePlan = function (trip,travelDet,dates){
                     var place = {
                         placeName:trip[x]['placeName'],
                         bestReview:trip[x]['bestReview'],
+                        address:trip[x]['address'],
                         placeId:trip[x]['placeId'],
                         img:trip[x]['img'],
                         lat:trip[x]['lat'],
@@ -209,10 +216,14 @@ exports.timePlan = function (trip,travelDet,dates){
                     fullTripDet.push(place);
                     placeCount +=1;
                     if(x<travelDet.length){
-                        var tm =travelDet[x]['distance']/60;
+                        console.log(travelDet[x])
+                        var tm =travelDet[x]['time']/60;
+                        console.log(tm)
                         var a = (Math.floor(tm/30)+1)*30
+                        console.log(a)
                         totalTripTime += a
                         var tt = addTimes(hour,min,a);
+                        console.log(tt)
                         hour = tt['h'];
                         min = tt['m'];
                     }
@@ -234,7 +245,74 @@ exports.timePlan = function (trip,travelDet,dates){
         return fullTripDet
         // ssssssss
 
-    }else{
+    }else if(dates === 0){
+        console.log("ccc")
+        var totalTripTime = 0
+        var currentDay = 1
+        var hour = 9
+        var min = 0
+        var fullTripDet = []
+        var oneDayTripDet = []
+        for(var x=0;x<trip.length;x++){
+                          
+                if(totalTripTime < day/60){                    
+                    var timee = 0;
+                    var startTimeH= hour;
+                    var startTimeM = min;
+                    if(trip[x]['positivePresentage']<50){timee = 60;}
+                    else if(trip[x]['positivePresentage']<75){ timee = 90;}
+                    else{timee = 120}
+                    totalTripTime += timee
+                    console.log(totalTripTime);
+                    var t = addTimes(hour,min,timee);
+                    var endTimeH = t['h'];
+                    var endTimeM = t['m'];
+                    hour = endTimeH;
+                    min = endTimeM;
+                    var place = {
+                        placeName:trip[x]['placeName'],
+                        bestReview:trip[x]['bestReview'],
+                        address:trip[x]['address'],
+                        placeId:trip[x]['placeId'],
+                        img:trip[x]['img'],
+                        lat:trip[x]['lat'],
+                        lng:trip[x]['lng'],
+                        negativePresentage:trip[x]['negativePresentage'],
+                        positivePresentage:trip[x]['positivePresentage'],
+                        naturalPresentage:trip[x]['naturalPresentage'],
+                        rating:trip[x]['rating'],
+                        startTimeH:getShowTimeH(startTimeH),
+                        startTimeM:getShowTimeM(startTimeM),
+                        endTimeH:getShowTimeH(endTimeH),
+                        endTimeM:getShowTimeM(endTimeM),
+                        latLng:trip[x]['lat']+","+trip[x]['lng'],
+                        day:currentDay
+                       }
+                    fullTripDet.push(place);
+                    if(x<travelDet.length){
+                        // console.log(travelDet[x])
+                        console.log(hour,min,"df")
+                        var tm =travelDet[x]['time']/60;
+                        console.log(tm);
+                        var a = (Math.floor(tm/30)+1)*30
+                        console.log(a);
+                        totalTripTime += a
+                        var tt = addTimes(hour,min,a);
+                        hour = tt['h'];
+                        min = tt['m'];
+                        console.log(hour,min,"as")
+                    }
+                }else{
+                    currentDay += 1;
+                    totalTripTime = 0;
+                    hour = 9;
+                    min = 0;
+                } 
+            
+        }
+        return fullTripDet;
+    }
+    else{
         console.log("bbbb")
         var totalTripTime = 0
         var currentDay = 1
@@ -261,6 +339,7 @@ exports.timePlan = function (trip,travelDet,dates){
                     var place = {
                         placeName:trip[x]['placeName'],
                         bestReview:trip[x]['bestReview'],
+                        address:trip[x]['address'],
                         placeId:trip[x]['placeId'],
                         img:trip[x]['img'],
                         lat:trip[x]['lat'],
