@@ -20,6 +20,10 @@ router.post('/',async function(req,res,next){
         var ss = tripPlan.timePlan(trip['trip'],trip['travelDetails'],days)
         res.status(200).json({trip:ss,"distances":trip['travelDetails'] })
 
+        if(typeof req.session.email !== 'undefined' && req.session.email !== null){
+            await db.addMyTrip(req.session.email,ss,trip['travelDetails'],days,"CUSTOMIZE TRIP")
+        }
+
     }catch(err){
         res.status(500).json({
             error:{message:err.message}

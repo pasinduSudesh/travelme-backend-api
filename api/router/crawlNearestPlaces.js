@@ -12,14 +12,14 @@ router.get('/:place',async function(req,res,next){
     const place = req.params.place;
     try{
         var urls = await searchResult.getCrawlURL(place,0);
-        console.log(urls)
-        var hasCrawled = await db.checkUrlInDB(urls[0]);
+        if(urls.length > 0){
+            var hasCrawled = await db.checkUrlInDB(urls[0]);
         // console.log(hasCrawled)
         if(hasCrawled){
             res.status(200).json(hasCrawled);            
         }else{
             var places = await spider.runPlaceSpider(urls);   
-            // console.log(places)  
+            console.log(places)  
             // console.log("runs spider ")    
             if(places){
                 var placeDet = await readFile.readFile('crawlerResults/placeSpiderResults.json');
@@ -43,6 +43,12 @@ router.get('/:place',async function(req,res,next){
             } 
             
         }       
+        }else{
+            res.status(500).json({
+                error:{message:`No search result found with '${place}' `}                
+            });
+        }
+        
                 
     }
     catch(err){
@@ -73,6 +79,11 @@ router.post('/',async function(req,res,next){
             error:{message:err.message}
         });
     }
+});
+
+router.get('/analysePlace/:placeId',function(req,res,next){
+    var placeId = req.params.placeId;
+    
 });
 
 module.exports = router

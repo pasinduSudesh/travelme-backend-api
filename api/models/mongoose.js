@@ -9,7 +9,9 @@ const Reviews = require('../db/reviews');
 const HotelCrawlerResult = require('../db/hotelCrawlerResults');
 const Hotels = require('../db/hotels');
 const test = require('../db/te');
-const UserReview = require('../db/userReviews')
+const UserReview = require('../db/userReviews');
+const Users = require('../db/user');
+const PlanedTrips = require('../db/myTrip');
 // ***********************************************************************************
 //  PLACE CRAWLER ACTIVIRES
 // ***********************************************************************************
@@ -348,7 +350,7 @@ function addSentimentDet(oldData,newData){
             totalReviews:oldData['totalReviews']+newData['totalReviews'],
             bestReview:newData['bestReview'],
             totalPolarity: newData['totalPolarity'],
-            rating: (newData['totalPolarity']*100)/newData['totalReviews'],
+            rating: (((oldData['totalReviews']*oldData['positivePresentage']/100) + (newData['totalReviews']*newData['positivePresentage']/100)) / (oldData['totalReviews']+newData['totalReviews']))*100,
             analyseState:true
     
             }
@@ -361,7 +363,7 @@ function addSentimentDet(oldData,newData){
             totalReviews:oldData['totalReviews']+newData['totalReviews'],
             bestReview:newData['bestReview'],
             totalPolarity: ((newData['totalPolarity']/newData['totalReviews'])+(oldData['totalPolarity']/oldData['totalReviews']))*(newData['totalReviews']+oldData['totalReviews']),
-            rating: (((newData['totalPolarity']/newData['totalReviews'])+(oldData['totalPolarity']/oldData['totalReviews']))*(newData['totalReviews']+oldData['totalReviews']))*100
+            rating: (((oldData['totalReviews']*oldData['positivePresentage']/100) + (newData['totalReviews']*newData['positivePresentage']/100)) / (oldData['totalReviews']+newData['totalReviews']))*100
     
             }
     }
@@ -567,3 +569,67 @@ exports.testfunctionForMocha = function(url){
     });
 
 }
+
+// #####################################################
+// AUTH
+// #####################################################
+exports.checkUser = function(email){
+    return new Promise((resolve, reject) => {
+        Users.find({
+            email:email
+        })
+        .then(doc=>{
+            if(doc.length > 0){resolve(true)}
+            else{resolve(false)}
+        })
+        .catch(err=>{
+            reject(new Error(err));
+        })
+    });
+}
+
+exports.addUser = function(email){
+    return new Promise((resolve, reject) => {
+        var u = new Users({
+            email:email
+        })
+        u.save()
+        .then(doc=>{
+            resolve();
+        })
+        .catch(err=>{
+            reject(new Error(err));
+        })
+    });
+}
+
+exports.addMyTrip = function(email, trip, distances, days, place){
+    return new Promise((resolve, reject) => {
+        var myTrip = new PlanedTrips({
+            email:email,
+            trip:trip,
+            distances:distances,
+            topic:days.toString() + "  DAYS IN " +place.toUpperCase()
+        })
+        myTrip.save()
+        .then(doc=>{
+            resolve();
+        })
+        .catch(err=>{
+            reject(new Error(err))
+        })
+    });
+}
+
+exports.getMyTrips = function(email){
+    return new Promise((resolve, reject) => {
+        PlanedTrips.find({email:email})
+        .then(docs=>{
+            resolve(docs);
+        })
+        .catch(err=>{
+            reject(new Error(err));
+        })
+    });
+}
+// #####################################################

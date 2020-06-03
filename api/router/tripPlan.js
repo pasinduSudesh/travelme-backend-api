@@ -124,6 +124,12 @@ router.post('/',async function(req,res,next){
 
     var ss = tripPlan.timePlan(trip['trip'],trip['travelDetails'],days)
 
+    if(typeof req.session.email !== 'undefined' && req.session.email !== null){
+        console.log("before")
+        await db.addMyTrip(req.session.email,ss,trip['travelDetails'],days,place)
+        console.log("after")
+    }
+
     res.status(200).json({
         "trip":ss,
         "distances":trip['travelDetails']   

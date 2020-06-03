@@ -5,14 +5,17 @@ const bodyParser = require('body-parser');
 var admin = require("firebase-admin");
 const mongoose = require('mongoose');
 
+var session = require('express-session');
+
+
 //firebase service account json file import
 var serviceAccount = require("./serviceAccountKey.json");
 
 //initialize firebase
-admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-    databaseURL: "https://travelme-29ae1.firebaseio.com"
-  });
+// admin.initializeApp({
+//     credential: admin.credential.cert(serviceAccount),
+//     databaseURL: "https://travelme-29ae1.firebaseio.com"
+//   });
 
 //   connect to mongo db
 mongoose.connect(
@@ -39,10 +42,14 @@ const nearestHotelRouter = require('./api/router/nearestHotels');
 const placeReviewRouter = require('./api/router/placeReviews');
 const customTripPlanRouter = require('./api/router/customTripPlan');
 const getPlaceRouter = require('./api/router/getPlace');
+const authRouter = require('./api/router/auth');
+const myTripRouter = require('./api/router/myTrip');
 
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
+
+
 
 app.use((req,res,next)=>{
     res.header("Access-Control-Allow-Origin","*");//this can allow to domain for access API
@@ -54,6 +61,13 @@ app.use((req,res,next)=>{
     }
     next();
 });
+
+app.use(session({
+    secret :'ssshhhhh',
+    resave : false,
+    saveUninitialized : true
+    
+    }));
 
 //const use routers
 app.use('/',homeRouter);
@@ -69,6 +83,8 @@ app.use('/nearestHotels',nearestHotelRouter);
 app.use('/placeReviews',placeReviewRouter);
 app.use('/customTripPlan',customTripPlanRouter);
 app.use('/getPlace',getPlaceRouter);
+app.use('/auth',authRouter);
+app.use('/myTrips',myTripRouter);
 
 
 
