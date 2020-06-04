@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="Mocha Tests" time="4.9010" tests="5" failures="4">
+  <testsuite name="Root Suite" timestamp="2020-06-04T04:01:13" tests="0" time="0.0000" failures="0">
+  </testsuite>
+  <testsuite name="CHECK FUNCTION =&gt; addUser" timestamp="2020-06-04T04:01:13" tests="5" file="D:\Projects\node-python\test\myTrips.js" time="4.9010" failures="4">
+    <testcase name="CHECK FUNCTION =&gt; addUser connecting to database" time="2.3200" classname="connecting to database">
+    </testcase>
+    <testcase name="CHECK FUNCTION =&gt; addUser add email" time="2.0020" classname="add email">
+      <failure message="MongoError: E11000 duplicate key error collection: 123.Users index: email_1 dup key: { email: &quot;nimala2311@gmail.com&quot; }" type="Error"><![CDATA[Error: MongoError: E11000 duplicate key error collection: 123.Users index: email_1 dup key: { email: "nimala2311@gmail.com" }
+    at D:\Projects\node-python\api\models\mongoose.js:601:20
+    at processTicksAndRejections (internal/process/task_queues.js:93:5)]]></failure>
+    </testcase>
+    <testcase name="CHECK FUNCTION =&gt; addUser Add duplicate user" time="0.2770" classname="Add duplicate user">
+      <failure message="MongoError: E11000 duplicate key error collection: 123.Users index: email_1 dup key: { email: &quot;nimala2311@gmail.com&quot; }" type="Error"><![CDATA[Error: MongoError: E11000 duplicate key error collection: 123.Users index: email_1 dup key: { email: "nimala2311@gmail.com" }
+    at D:\Projects\node-python\api\models\mongoose.js:601:20
+    at processTicksAndRejections (internal/process/task_queues.js:93:5)]]></failure>
+    </testcase>
+    <testcase name="CHECK FUNCTION =&gt; addUser Adding Number insted string" time="0.2900" classname="Adding Number insted string">
+      <failure message="MongoError: E11000 duplicate key error collection: 123.Users index: email_1 dup key: { email: &quot;3&quot; }" type="Error"><![CDATA[Error: MongoError: E11000 duplicate key error collection: 123.Users index: email_1 dup key: { email: "3" }
+    at D:\Projects\node-python\api\models\mongoose.js:601:20
+    at processTicksAndRejections (internal/process/task_queues.js:93:5)]]></failure>
+    </testcase>
+    <testcase name="CHECK FUNCTION =&gt; addUser add array" time="0.0120" classname="add array">
+      <failure message="ValidationError: email: Cast to String failed for value &quot;[ &apos;nimala31@gmail.com&apos;, &apos;nimala21@gmail.com&apos; ]&quot; at path &quot;email&quot;" type="Error"><![CDATA[Error: ValidationError: email: Cast to String failed for value "[ 'nimala31@gmail.com', 'nimala21@gmail.com' ]" at path "email"
+    at D:\Projects\node-python\api\models\mongoose.js:601:20
+    at processTicksAndRejections (internal/process/task_queues.js:93:5)]]></failure>
+    </testcase>
+  </testsuite>
+</testsuites>

@@ -1,4 +1,9 @@
-{
+var assert = require('chai').assert
+var expect = require('chai').expect
+const mongoose = require('mongoose')
+
+var db = require('../api/models/mongoose');
+var placeCrawlerResult = {
     "place_count": 10,
     "places": [{
         "place_name": "Mulgirigala Raja Maha Vihara",
@@ -56,4 +61,149 @@
         "date": "06/04/2020",
         "time": "12:17:48"
     }
-}
+}   
+var links = [
+    {
+      url: 'https://www.tripadvisor.com/Attraction_Review-g304142-d2012330-Reviews-Mulgirigala_Raja_Maha_Vihara-Tangalle_Southern_Province.html',
+      review_count: '713 reviews'
+    },
+    {
+      url: 'https://www.tripadvisor.com/Attraction_Review-g1027209-d10229106-Reviews-Ridiyagama_Safari_Park-Hambantota_Tangalle_Southern_Province.html',
+      review_count: '92 reviews'
+    },
+    {
+      url: 'https://www.tripadvisor.com/Attraction_Review-g304142-d4068286-Reviews-Goyambokka_Beach_Sriyanga_Sanjeewa-Tangalle_Southern_Province.html',
+      review_count: '515 reviews'
+    },
+    {
+      url: 'https://www.tripadvisor.com/Attraction_Review-g1027209-d5877603-Reviews-Mirijjawila_Botanic_Gardens-Hambantota_Tangalle_Southern_Province.html',
+      review_count: '18 reviews'
+    },
+    {
+      url: 'https://www.tripadvisor.com/Attraction_Review-g1027209-d6903423-Reviews-Dry_Zone_Botanic_Gardens_Hambantota-Hambantota_Tangalle_Southern_Province.html',
+      review_count: '33 reviews'
+    },
+    {
+      url: 'https://www.tripadvisor.com/Attraction_Review-g304142-d10240178-Reviews-Ashram_Sri_Lanka_Sri_Lanka_itinerary-Tangalle_Southern_Province.html',
+      review_count: '41 reviews'
+    },
+    {
+      url: 'https://www.tripadvisor.com/Attraction_Review-g304142-d1748074-Reviews-Tangalle_Lagoon-Tangalle_Southern_Province.html',
+      review_count: '244 reviews'
+    },
+    {
+      url: 'https://www.tripadvisor.com/Attraction_Review-g1027209-d12133619-Reviews-Walawe_River_Safari-Hambantota_Tangalle_Southern_Province.html',
+      review_count: '13 reviews'
+    },
+    {
+      url: 'https://www.tripadvisor.com/Attraction_Review-g1027209-d12982477-Reviews-Agro_Technology_Park-Hambantota_Tangalle_Southern_Province.html',
+      review_count: '10 reviews'
+    },
+    {
+      url: 'https://www.tripadvisor.com/Attraction_Review-g1027209-d7119257-Reviews-Birds_Research_Center_Resort-Hambantota_Tangalle_Southern_Province.html',
+      review_count: '45 reviews'
+    }
+  ]
+
+
+describe('COONNECT TO DATABASE',function(){
+    it('connecting to database', function(done){
+        mongoose.connect(
+            'mongodb+srv://travelme:travelme@cluster0-2r76h.mongodb.net/testingDatabase?retryWrites=true&w=majority',
+            {
+                useNewUrlParser: true,
+                useUnifiedTopology: true,
+                useCreateIndex: true,  }
+            ).then(resp=>{done()}).catch(err=>{console.log(err)});
+    }).timeout(10000)
+
+})
+
+describe.skip('CHECK FUNCTION => savePlaceCrawlerDet',function(){
+    it('save data',function(done){
+        db.savePlaceCrawlerDet("urlString",placeCrawlerResult)
+        .then(res=>{
+            assert.equal(res,undefined)
+            done()
+        })
+        .catch(err=>{
+            done(err)
+        })
+    }).timeout(10000)
+})
+
+describe.skip('CHECK FUNCTION => checkUrlInDB',function(){
+    it('with wrong url => should pass',function(done){
+        db.checkUrlInDB("urlStriang")
+        .then(res=>{
+            assert.equal(res,false)
+            done()
+        })
+        .catch(err=>{
+            done(err)
+        })
+    }).timeout(10000)
+
+    it('with correct  url => should pass',function(done){
+        db.checkUrlInDB("urlString")
+        .then(res=>{
+            expect(res).to.contain.property('places')
+            expect(res).to.contain.property('place-count')
+            expect(res).to.contain.property('links')
+            expect(res).to.contain.property('last-modified')
+            done()
+        })
+        .catch(err=>{
+            done(err)
+        })
+    }).timeout(10000)
+})
+
+describe.skip('CHECK FUNCTION => saveLinksToReview', function(){
+    it('with correct data => should pass',function(done){
+        db.saveLinksToReview(links)
+        .then(res=>{
+           assert.equal(res,undefined)
+            done()
+        })
+        .catch(err=>{
+            done(err)
+        })
+    }).timeout(10000)
+
+    it('with incorrect data => should fail',function(done){
+        db.saveLinksToReview("dddd")
+        .then(res=>{
+           assert.equal(res,undefined)
+            done()
+        })
+        .catch(err=>{
+            done(err)
+        })
+    }).timeout(10000)
+})
+
+describe.skip('CHECK FUNCTION => savePlaceDet',function(){
+    it('with correct data',function(done){
+        db.savePlaceDet(placeCrawlerResult['places'])
+        .then(res=>{
+           assert.equal(res,undefined)
+            done()
+        })
+        .catch(err=>{
+            done(err)
+        })
+    }).timeout(30000)
+
+    it('with incorrect data',function(done){
+        db.savePlaceDet("dmfj")
+        .then(res=>{
+           assert.equal(res,undefined)
+            done()
+        })
+        .catch(err=>{
+            done(err)
+        })
+    }).timeout(10000)
+})
+

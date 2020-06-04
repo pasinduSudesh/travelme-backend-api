@@ -30,6 +30,7 @@ router.get('/:place',async function(req,res,next){
                 p.forEach(e => {
                    links.push({url: e['review_link'], review_count:e['no_of_reviews']});
                 });
+                console.log(links)
                 await db.saveLinksToReview(links);
                 await db.savePlaceDet(p) 
                 
