@@ -4,7 +4,7 @@ const morgan = require('morgan');
 const bodyParser = require('body-parser');
 var admin = require("firebase-admin");
 const mongoose = require('mongoose');
-
+const cron = require("node-cron");
 var session = require('express-session');
 
 
@@ -19,7 +19,7 @@ var serviceAccount = require("./serviceAccountKey.json");
 
 //   connect to mongo db
 mongoose.connect(
-    'mongodb+srv://travelme:travelme@cluster0-2r76h.mongodb.net/test?retryWrites=true&w=majority',
+    'mongodb+srv://travelme:travelme@cluster0-2r76h.mongodb.net/travel_me?retryWrites=true&w=majority',
     {
         useNewUrlParser: true,
         useUnifiedTopology: true,
@@ -44,6 +44,8 @@ const customTripPlanRouter = require('./api/router/customTripPlan');
 const getPlaceRouter = require('./api/router/getPlace');
 const authRouter = require('./api/router/auth');
 const myTripRouter = require('./api/router/myTrip');
+
+const automate = require('./api/models/automate')
 
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({extended:false}));
@@ -87,6 +89,9 @@ app.use('/auth',authRouter);
 app.use('/myTrips',myTripRouter);
 
 
+cron.schedule("59 23 * * *", function() {
+    automate.automateCrawlReviews();
+  });
 
 //handdle 404 error 
 app.use((req,res,next)=>{

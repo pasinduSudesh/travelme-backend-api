@@ -167,10 +167,12 @@ exports.crawlReviewWithUrls =  function(urls){
                         allReviews.push({
                             place:listOfPlaces[index],
                             reviews:reviewArray,
-                            analys_state:false,
+                            analys_state:true,
                             placeId:pId
                         });
-                    });                    
+                        console.log("pushed")
+                    });   
+                    console.log("final")                 
                     resolve(allReviews);
                 }else{
                     reject(new Error("Review crawler not run"))

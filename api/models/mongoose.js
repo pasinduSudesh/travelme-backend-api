@@ -95,10 +95,16 @@ exports.savePlaceDet = function(places){
     return new Promise(async (resolve,reject)=>{
         try{
             for(var x=0; x<places.length;x++){
+                console.log(unescape(places[x]['place_name']));
                 var placeDetFromGoogle =  await api.googlePlaceAPI(places[x]['place_name']);
-                var hasPlace = await hasPlaceInDB(placeDetFromGoogle['candidates'][0]['place_id']);
-                if(! hasPlace){
-                    await savePlace(placeDetFromGoogle,places[x])
+                if(placeDetFromGoogle['status'] === 'OK'){
+                    console.log(placeDetFromGoogle['candidates'][0]['place_id'])
+                    console.log(places[x])
+                    var hasPlace = await hasPlaceInDB(placeDetFromGoogle['candidates'][0]['place_id']);
+                    console.log(hasPlace);
+                    if(! hasPlace){
+                        await savePlace(placeDetFromGoogle,places[x])
+                    }
                 }
             }
             resolve();
@@ -180,8 +186,8 @@ function hasPlaceInDB(placeId){
 exports.getPlacesForTripFromDB = function(placeCount,lat,lng){
     return new Promise((resolve, reject) => {
         Places.find({
-            lat:{$gt:lat-0.5 , $lt: lat+0.5},
-            lng:{$gt:lng-0.5 , $lt: lng+0.5}
+            lat:{$gt:lat-0.2 , $lt: lat+0.2},
+            lng:{$gt:lng-0.2 , $lt: lng+0.2}
         })
         .sort('rating')
         .limit(placeCount)
@@ -200,7 +206,9 @@ exports.getLinksBeforeCrawl = function(links){
                 var ss  = await getLinkDet(links[i]);
                 console.log(links[i],"ssssssss");
                 var l = createLink(ss);
-                resultList.push(l);               
+                if(l){
+                    resultList.push(l);
+                }
 
             }
             resolve(resultList);
@@ -234,6 +242,8 @@ exports.getLinksBeforeCrawl = function(links){
                 var newUrl = splitUrl[0]+"-"+splitUrl[1]+"-"+splitUrl[2]+"-"+splitUrl[3]+"-"+pagination+"-"+splitUrl[4]+"-"+splitUrl[5];
                 return newUrl;        
             }
+        }else{
+            return false
         }
     }
 }
@@ -312,11 +322,11 @@ exports.saveSentiments = function(data){
                 var placeId = data['analyse'][i]['placeID'];
                 console.log(placeId,"placeId") ;
                 var placeDet = await getPlaceDet(placeId);
-                console.log(placeDet);
-                console.log(data['analyse'][i])
+                // console.log(placeDet);
+                // console.log(data['analyse'][i])
                 
                 var saveDat = addSentimentDet(placeDet,data['analyse'][i])
-                console.log(saveDat);
+                // console.log(saveDat);
                 placesAlaysed.push(saveDat);
                 await saveData(saveDat,placeId);
                 
@@ -629,6 +639,25 @@ exports.getMyTrips = function(email){
         })
         .catch(err=>{
             reject(new Error(err));
+        })
+    });
+}
+// #####################################################
+// #####################################################
+// Automate activities
+// #####################################################
+exports.getLinksToAutomateCrawl = function(){
+    return new Promise((resolve, reject) => {
+        LinksToReview.find({
+            crawledPages:0
+        })
+        .limit(10)
+        .exec()
+        .then(docs=>{
+            resolve(docs)
+        })
+        .catch(err=>{
+            reject(err)
         })
     });
 }

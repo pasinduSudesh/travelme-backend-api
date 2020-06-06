@@ -8,7 +8,7 @@ from datetime import datetime
 
 class GoogleSpider(scrapy.Spider):
     name = "place"
-    allowed_domains = ['https://www.tripadvisor.com']
+    # allowed_domains = ['https://www.tripadvisor.com']
     start_urls = []
 
 
@@ -31,14 +31,19 @@ class GoogleSpider(scrapy.Spider):
         data['places'] = []
         data['links']  = []
 
+        print(place_review_link)
+
         for x in range(len(place_name)):
-            data['places'].append({
-                'place_name': place_name[x],
-                'no_of_reviews': number_of_revewis[x],
-                'review_link': self.allowed_domains[0] + place_review_link[x],
-                'img': img[x].split(",")[2].split(" ")[1]
-            })
-            data['links'].append(self.allowed_domains[0] + place_review_link[x])
+            try:
+                data['places'].append({
+                    'place_name': place_name[x],
+                    'no_of_reviews': number_of_revewis[x],
+                    'review_link': 'https://www.tripadvisor.com' + place_review_link[x],
+                    'img': img[x].split(",")[2].split(" ")[1]
+                })
+                data['links'].append('https://www.tripadvisor.com' + place_review_link[x])
+            except:
+                print("error")
         
         data['last_modified'] = {"date": datetime.now().strftime("%m/%d/%Y"),"time":datetime.now().strftime("%H:%M:%S")}
 
