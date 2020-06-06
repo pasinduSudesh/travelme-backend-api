@@ -5,7 +5,8 @@ const fb = require('firebase-admin');
 
 const db = require('../models/mongoose');
 const api = require('../models/api');
-
+const sentiment = require('../models/sentiment')
+const file = require('../models/readJsonFile')
 
 router.post('/',async function(req,res,next){
 
@@ -15,24 +16,58 @@ router.post('/',async function(req,res,next){
     try{
         
         var placeDetails = await api.googlePlaceAPI(place);
-        var reviewData = {
-            address: placeDetails['candidates'][0]['formatted_address'],
-            placeName: placeDetails['candidates'][0]['name'],
-            types: placeDetails['candidates'][0]['types'],
-            placeId: placeDetails['candidates'][0]['place_id'],
-            lat: placeDetails['candidates'][0]['geometry']['location']['lat'],
-            lng: placeDetails['candidates'][0]['geometry']['location']['lng'],
-            userName: name,
-            review: review,
-            analyseState: false
+        if(placeDetails['status'] === 'OK'){
+            var reviewData = {
+                address: placeDetails['candidates'][0]['formatted_address'],
+                placeName: placeDetails['candidates'][0]['name'],
+                types: placeDetails['candidates'][0]['types'],
+                placeId: placeDetails['candidates'][0]['place_id'],
+                lat: placeDetails['candidates'][0]['geometry']['location']['lat'],
+                lng: placeDetails['candidates'][0]['geometry']['location']['lng'],
+                userName: name,
+                review: review,
+                analyseState: false
+            }            
+    
+            var data = JSON.stringify({
+                reviews:[{
+                    "place": placeDetails['candidates'][0]['name'],
+                    "reviews": [review],
+                    "analys_state": false,
+                    "placeId": placeDetails['candidates'][0]['place_id']
+                }]
+            })
+            fs.writeFileSync('sentimentJson/reviewsForSentiment.json',data);
+            await sentiment.sentimentAnalyze();
+            var sentimentResult = await file.readFile('sentimentJson/sentimentResults.json');
+            console.log(sentimentResult);
+            var hasPlace = await db.getPlacesWithPlaceId( placeDetails['candidates'][0]['place_id']);
+            if(hasPlace.length === 1){
+                await db.saveSentiments(sentimentResult);
+                reviewData.analyseState = true;
+                var isSaveToDB = await db.saveReviewToDB(reviewData);
+                res.status(200).json({
+                    "STATUS":"OK",
+                    "message":`Your review is saved. Rating ${sentimentResult.analyse[0].positivePresentage}`
+                })
+            }else{
+                var isSaveToDB = await db.saveReviewToDB(reviewData);
+                res.status(200).json({
+                    "STATUS":"OK",
+                    "message":"Review is saved to DB"
+                })
+            }          
+    
+            
+        }else{
+            res.status(500).json({
+                'error':{'message':`'${place}' is not a place name`}
+            });
         }
-        var isSaveToDB = await db.saveReviewToDB(reviewData);
-        res.status(200).json({
-            "STATUS":"OK",
-            "message":"Review is saved to DB"
-        })
+        
 
     }catch(err){
+        console.log(err);
         res.status(500).json({
             'error':{'message':err.message}
         });

@@ -372,7 +372,7 @@ function addSentimentDet(oldData,newData){
 
 function saveData(data,placeId){
     return new Promise((resolve, reject) => {
-        Places.update({placeId:placeId},data)
+        Places.updateOne({placeId:placeId},data)
         .then(doc=>{
             resolve();
         }).catch(err=>{
