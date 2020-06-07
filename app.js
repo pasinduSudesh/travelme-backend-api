@@ -88,10 +88,15 @@ app.use('/getPlace',getPlaceRouter);
 app.use('/auth',authRouter);
 app.use('/myTrips',myTripRouter);
 
-
-cron.schedule("38 20 * * *", function() {
+cron.schedule("*/59 * * * *", function() {
     automate.automateCrawlReviews();
-  });
+  },{
+    scheduled:true,
+    timezone:"Asia/Colombo"
+}
+  );
+
+
 
 //handdle 404 error 
 app.use((req,res,next)=>{
