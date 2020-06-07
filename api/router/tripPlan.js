@@ -127,6 +127,8 @@ router.post('/', async function (req, res, next) {
             console.log("before")
             await db.addMyTrip(req.session.email, ss, trip['travelDetails'], days, place)
             console.log("after")
+        }else if(req.body.email){
+            await db.addMyTrip(req.body.email, ss, trip['travelDetails'], days, place)
         }
 
         res.status(200).json({

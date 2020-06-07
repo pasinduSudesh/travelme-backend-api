@@ -25,4 +25,19 @@ router.get('/',async function(req,res,next){
     
 });
 
+router.get('/:email',async function(req,res,next){
+    try{
+        var trips = await db.getMyTrips(req.params.email);
+        res.status(200).json({
+            trips:trips
+        })
+    }catch(err){
+        res.status(500).json({
+            error:{message:err.message}
+            
+        })
+    }
+    
+});
+
 module.exports = router;

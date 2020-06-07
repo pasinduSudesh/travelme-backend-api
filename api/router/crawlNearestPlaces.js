@@ -15,11 +15,13 @@ router.get('/:place',async function(req,res,next){
         console.log(urls)
         if(urls.length > 0){
             var hasCrawled = await db.checkUrlInDB(urls[0]);
-        // console.log(hasCrawled)
+            var newUrls = []
+            newUrls.push(urls[0])
+        
         if(hasCrawled){
             res.status(200).json(hasCrawled);            
         }else{
-            var places = await spider.runPlaceSpider(urls);   
+            var places = await spider.runPlaceSpider(newUrls);   
             console.log(places,"aaaaa")  
             // console.log("runs spider ")    
             if(places){
