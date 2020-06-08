@@ -21,7 +21,7 @@ router.get('/:places',async function(req,res,next){
             res.status(200).json(HotelsResult)           
 
         }else{
-            res.status(500).json({
+            res.status(400).json({
                 error:{
                     message: `No Hotels found with seach query ${place}`
                 }

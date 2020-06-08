@@ -88,7 +88,7 @@ app.use('/getPlace',getPlaceRouter);
 app.use('/auth',authRouter);
 app.use('/myTrips',myTripRouter);
 
-cron.schedule("*/59 * * * *", function() {
+cron.schedule("*/4 * * * *", function() {
     automate.automateCrawlReviews();
   },{
     scheduled:true,

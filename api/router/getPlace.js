@@ -27,12 +27,12 @@ router.get('/:placeName',async function(req,res,next){
             if(places.length>0){
                 res.status(200).json(places)
             }else{
-                res.status(500).json({
+                res.status(400).json({
                     error:{message:`No Places Found '${place}'`}
                 })
            }
         }else{
-            res.status(500).json({
+            res.status(400).json({
                 error:{message:`No Places Found '${place}'`}
             })
         }
@@ -45,5 +45,26 @@ router.get('/:placeName',async function(req,res,next){
     }    
 
 });
+
+router.get('/singlePlace/:placeName',async function(req,res,next){
+    var place = req.params.placeName;
+    var placeDet = await api.googlePlaceAPI(place)
+    if(placeDet.status === 'OK'){
+        place = await db.getPlacesWithPlaceId(placeDet['candidates'][0]['place_id'])
+        if(place.length > 0){
+            res.status(200).json({
+                place: place[0]
+            })
+        }else{
+            res.status(400).json({
+                error:{message:`Please try again`}
+            })
+        }
+    }else{
+        res.status(400).json({
+            error:{message:`Please try again`}
+        })
+    }
+})
 
 module.exports = router

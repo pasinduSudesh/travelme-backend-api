@@ -15,8 +15,9 @@ var tripPlan = require('../models/path');
 
 
 router.post('/', async function (req, res, next) {
+    try{
 
-    var place = req.body.place;
+        var place = req.body.place;
     var days = parseInt(req.body.days);
     // console.log(days)
 
@@ -137,10 +138,19 @@ router.post('/', async function (req, res, next) {
         });
 
     }else{
-        res.status(500).json({
+        res.status(400).json({
             error:{message:`You Enterd place '${place}' is wrong`}
         })
     }
+    }
+    catch(err){
+        res.status(500).json({
+            error:{message:err.message}
+            
+        })
+    }
+
+    
 
 
 

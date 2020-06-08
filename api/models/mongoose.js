@@ -187,7 +187,8 @@ exports.getPlacesForTripFromDB = function(placeCount,lat,lng){
     return new Promise((resolve, reject) => {
         Places.find({
             lat:{$gt:lat-0.2 , $lt: lat+0.2},
-            lng:{$gt:lng-0.2 , $lt: lng+0.2}
+            lng:{$gt:lng-0.2 , $lt: lng+0.2},
+            analyseState:true
         })
         .sort('rating')
         .limit(placeCount)

@@ -78,7 +78,10 @@ router.post('/',async function(req,res,next){
         // console.log(distanceList);
 
     }catch(err){
-
+        res.status(500).json({
+            error:{message:err.message}
+            
+        })
     }
    
 });

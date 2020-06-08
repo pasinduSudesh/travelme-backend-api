@@ -45,7 +45,7 @@ router.get('/:place',async function(req,res,next){
                     res.status(200).json(placeDet);
                     console.log("end")                
                 }else{
-                    res.status(500).json({
+                    res.status(400).json({
                         error:{message:`No search result found with '${place}' `}                
                     });
                 }
@@ -54,7 +54,7 @@ router.get('/:place',async function(req,res,next){
             
         }       
         }else{
-            res.status(500).json({
+            res.status(400).json({
                 error:{message:`No search result found with '${place}' `}                
             });
         }

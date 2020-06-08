@@ -60,7 +60,7 @@ router.post('/',async function(req,res,next){
     
             
         }else{
-            res.status(500).json({
+            res.status(400).json({
                 'error':{'message':`'${place}' is not a place name`}
             });
         }

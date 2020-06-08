@@ -17,7 +17,7 @@ describe('COONNECT TO DATABASE',function(){
 
 })
 
-describe.skip('CHECKING FUNCTION => crawlWithPlaceName',function(){
+describe('CHECKING FUNCTION => crawlWithPlaceName',function(){
     it('check ckrawlwe with place name', function(done){
         crawler.crawlWithPlaceName("matara")
         .then(res=>{
@@ -69,7 +69,7 @@ describe.skip('CHECKING FUNCTION => crawlWithPlaceName',function(){
     }).timeout(120000)
 
     it('check ckrawlwe with place name', function(done){
-        crawler.crawlWithPlaceName("jaffna")
+        crawler.crawlWithPlaceName("dabulla")
         .then(res=>{
             console.log(res)
             done()
@@ -119,7 +119,7 @@ describe.skip('CHECKING FUNCTION => crawlWithPlaceName',function(){
     }).timeout(120000)
 
     it('check ckrawlwe with place name', function(done){
-        crawler.crawlWithPlaceName("trincomale")
+        crawler.crawlWithPlaceName("rathnapura")
         .then(res=>{
             console.log(res)
             done()
@@ -189,7 +189,7 @@ describe.skip('CHECKING FUNCTION => crawlWithPlaceName',function(){
     }).timeout(120000)
 
     it('check ckrawlwe with place name', function(done){
-        crawler.crawlWithPlaceName("rathnapura")
+        crawler.crawlWithPlaceName("puththalama sri lanka")
         .then(res=>{
             console.log(res)
             done()
@@ -199,7 +199,7 @@ describe.skip('CHECKING FUNCTION => crawlWithPlaceName',function(){
     }).timeout(120000)
 
     it('check ckrawlwe with place name', function(done){
-        crawler.crawlWithPlaceName("vavniya")
+        crawler.crawlWithPlaceName("trincolame")
         .then(res=>{
             console.log(res)
             done()
@@ -207,6 +207,47 @@ describe.skip('CHECKING FUNCTION => crawlWithPlaceName',function(){
             done(err)
         })
     }).timeout(120000)
+
+    it('check ckrawlwe with place name', function(done){
+        crawler.crawlWithPlaceName("mathale sri lanka")
+        .then(res=>{
+            console.log(res)
+            done()
+        }).catch(err=>{
+            done(err)
+        })
+    }).timeout(120000)
+
+    it('check ckrawlwe with place name', function(done){
+        crawler.crawlWithPlaceName("nuwara eliya")
+        .then(res=>{
+            console.log(res)
+            done()
+        }).catch(err=>{
+            done(err)
+        })
+    }).timeout(120000)
+
+    it('check ckrawlwe with place name', function(done){
+        crawler.crawlWithPlaceName("mahanuwara")
+        .then(res=>{
+            console.log(res)
+            done()
+        }).catch(err=>{
+            done(err)
+        })
+    }).timeout(120000)
+
+    it('check ckrawlwe with place name', function(done){
+        crawler.crawlWithPlaceName("kurunagala")
+        .then(res=>{
+            console.log(res)
+            done()
+        }).catch(err=>{
+            done(err)
+        })
+    }).timeout(120000)
+
 })
 
 

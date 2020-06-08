@@ -11,7 +11,7 @@ router.get('/',async function(req,res,next){
                 trips:trips
             })
         }else{
-            res.status(500).json({
+            res.status(400).json({
                 error:{message:"Not Logged in"}
             })
         }
