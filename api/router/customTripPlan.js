@@ -23,7 +23,7 @@ router.post('/',async function(req,res,next){
         if(typeof req.session.email !== 'undefined' && req.session.email !== null){
             await db.addMyTrip(req.session.email,ss,trip['travelDetails'],days,"CUSTOMIZE TRIP")
         }else if(req.body.email){
-            await db.addMyTrip(req.body.email, ss, trip['travelDetails'], days, place)
+            await db.addMyTrip(req.body.email, ss, trip['travelDetails'], days, "CUSTOM TRIP")
         }
 
     }catch(err){
