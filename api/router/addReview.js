@@ -48,7 +48,7 @@ router.post('/',async function(req,res,next){
                 var isSaveToDB = await db.saveReviewToDB(reviewData);
                 res.status(200).json({
                     "STATUS":"OK",
-                    "message":`Your review is saved. Rating ${sentimentResult.analyse[0].positivePresentage}`
+                    "message":`Your review is saved. Rating is ${Math.round((sentimentResult.analyse[0].totalPolarity+1)*50*100)/100} %`
                 })
             }else{
                 var isSaveToDB = await db.saveReviewToDB(reviewData);
