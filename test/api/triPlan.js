@@ -9,7 +9,6 @@ chai.use(chaiHttp);
 
 describe('CHECK TRIP PLAN', function(){
 
-
     it('check with wrong url', function(done){
         chai.request(server)
             .post('/planTripx')
@@ -25,7 +24,7 @@ describe('CHECK TRIP PLAN', function(){
 
     it('check with wrong input place', function(done){
         chai.request(server)
-            .post('/planTripx')
+            .post('/planTrip')
             .send({place:"", days:"2", email:"kamal@gmail.com"})
             .end((err,resp)=>{
                 resp.should.have.status(400)
@@ -38,7 +37,7 @@ describe('CHECK TRIP PLAN', function(){
 
     it('check with wrong input days', function(done){
         chai.request(server)
-            .post('/planTripx')
+            .post('/planTrip')
             .send({place:"galle", days:"", email:"kamal@gmail.com"})
             .end((err,resp)=>{
                 resp.should.have.status(400)
@@ -50,7 +49,7 @@ describe('CHECK TRIP PLAN', function(){
 
     it('check with wrong input null email', function(done){
         chai.request(server)
-            .post('/planTripx')
+            .post('/planTrip')
             .send({place:"galle", days:"", email:""})
             .end((err,resp)=>{
                 resp.should.have.status(400)
