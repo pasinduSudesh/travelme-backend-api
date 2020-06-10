@@ -90,7 +90,7 @@ describe('CHECK NEAREST HOTEL', function(){
         chai.request(server)
         .post('/nearestHotels').send({place:"matara",lat:"5.9408955", lng:"80.5709447"})
         .end((err,res)=>{
-            console.log(res.body[0])  
+            // console.log(res.body[0])  
             res.should.have.status(200) 
             res.body[0].should.have.property('name') 
             res.body[0].should.have.property('address') 
@@ -109,7 +109,7 @@ describe('CHECK NEAREST HOTEL', function(){
         chai.request(server)
         .post('/nearestHotels').send({place:"galle",lat:"6.027155", lng:"80.2152036"})
         .end((err,res)=>{
-            console.log(res.body[0])  
+            // console.log(res.body[0])  
             res.should.have.status(200) 
             res.body[0].should.have.property('name') 
             res.body[0].should.have.property('address') 
@@ -128,7 +128,7 @@ describe('CHECK NEAREST HOTEL', function(){
         chai.request(server)
         .post('/nearestHotels').send({place:"polonnaruwa",lat:"7.936691", lng:"81.0030294"})
         .end((err,res)=>{
-            console.log(res.body[0])  
+            // console.log(res.body[0])  
             res.should.have.status(200) 
             res.body.should.have.property('name') 
             res.body.should.have.property('address') 

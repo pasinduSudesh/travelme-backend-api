@@ -1,0 +1,27 @@
+config:
+  target: 'https://noderestapp.azurewebsites.net'
+  phases:
+    - duration: 20
+      arrivalRate: 5
+  defaults:
+    headers:
+      x-my-service-auth: '987401838271002188298567'
+scenarios:
+  - flow:
+    - get:
+        url: "/"
+    - post:
+        url: "/addReview"
+        json: 
+          name: "kamal"
+          place: "galle fort"
+          review: "best place"
+    - post:
+        url: "/planTrip"
+        json: 
+          place: "galle"
+          days: "2"
+          email: "kmal@gmail.com"
+    - get:
+        url: "/crawlNearestPlaces/polonnaruwa"
+

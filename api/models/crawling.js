@@ -52,9 +52,9 @@ exports.crawlHotelsWithPlaceName = function(place){
     return new Promise(async (resolve, reject) => {
         try{
             var urls = await searchResult.getCrawlURL(place,1);
-            console.log(urls);
+            // console.log(urls);
             var hasCrawled = await db.checkHotelCrawlUrlInDb(urls[0]);
-            console.log(hasCrawled)
+            // console.log(hasCrawled)
             if(hasCrawled){
                 resolve("CRAWLED PREVIOUSLY")
             }else{
@@ -62,7 +62,7 @@ exports.crawlHotelsWithPlaceName = function(place){
                 
                 await spider.hotelSpider(urls,20);
                 // console.log("SAving Urls")
-                console.log(urls);
+                // console.log(urls);
                 await db.saveCrawlUrl(urls[0])
                 var hotelDet = await readFile.readFile('crawlerResults/hotelResults.json');
                 for(var x=0;x<hotelDet['hotelDetails'].length;x++){
@@ -84,7 +84,7 @@ exports.crawlHotelsWithPlaceName = function(place){
                         await db.saveHotelDetails(HotelDetailsToSave)
                     }
                     else{
-                        console.log("A")
+                        // console.log("A")
                     }
                 }
                 resolve("NOW CRAWLED")

@@ -40,7 +40,6 @@ router.post('/',async function(req,res,next){
             fs.writeFileSync('sentimentJson/reviewsForSentiment.json',data);
             await sentiment.sentimentAnalyze();
             var sentimentResult = await file.readFile('sentimentJson/sentimentResults.json');
-            console.log(sentimentResult);
             var hasPlace = await db.getPlacesWithPlaceId( placeDetails['candidates'][0]['place_id']);
             if(hasPlace.length === 1){
                 await db.saveSentiments(sentimentResult);
@@ -67,7 +66,7 @@ router.post('/',async function(req,res,next){
         
 
     }catch(err){
-        console.log(err);
+        // console.log(err);
         res.status(500).json({
             'error':{'message':err.message}
         });

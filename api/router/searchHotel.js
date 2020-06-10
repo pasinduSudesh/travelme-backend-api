@@ -17,7 +17,7 @@ router.get('/:places',async function(req,res,next){
             var lng = Math.round(placeDet['candidates'][0]['geometry']['location']['lng'] * 10000)/10000
             // console.log(lat,lng)
             HotelsResult = await db.getNearestHotels(lat,lng);
-            console.log(HotelsResult.length)            
+            // console.log(HotelsResult.length)            
             res.status(200).json(HotelsResult)           
 
         }else{

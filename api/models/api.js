@@ -35,7 +35,7 @@ exports.getCrawlURL = async function(place, placeType){
     var API_KEY = config['API_KEY']
     var CX = config['CX']
     var SEARCH_QUERY = place + " " + config['PLACE_TYPES'][placeType]
-    console.log(SEARCH_QUERY)
+    // console.log(SEARCH_QUERY)
 
     const searchResult = await customSearchAPI(API_KEY,CX,SEARCH_QUERY,placeType);
 
@@ -98,11 +98,11 @@ exports.derectionAPI = function(start,end){
         var query = `https://www.mapquestapi.com/directions/v2/route?key=${API_KEY}&from=${start}&to=${end}&outFormat=json&ambiguities=ignore&routeType=fastest&doReverseGeocode=false&enhancedNarrative=false&avoidTimedConditions=false&unit=k`;
         request.get(query,function(err,response,body){
             if(err){
-                console.log(err.message)
+                // console.log(err.message)
                 reject(new Error(err));
 
             }else{
-                console.log(response.statusCode)
+                // console.log(response.statusCode)
                 if(response.statusCode === 200){
                     resolve(JSON.parse(body))
                 }else{

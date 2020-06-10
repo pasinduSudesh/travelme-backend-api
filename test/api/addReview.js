@@ -6,7 +6,7 @@ chai.should();
 
 chai.use(chaiHttp);
 
-describe('CHECK ADD REVIEWS', ()=>{
+describe('ADD REVIEWS ', ()=>{
     it('ADD REVIES TO DATABSE',(done)=>{
         chai.request(server)
         .post('/addReview').send({name:"Kamal",place:"galle duch fort", review:"Good place"})
@@ -77,9 +77,9 @@ describe('CHECK ADD REVIEWS', ()=>{
         .post('/addReview').send({name:"Kamal",place:"vatadageya", review:"Good place"})
         .end((err,res)=>{
             console.log(res.body)
-            res.should.have.status(200)
-            res.body.should.have.property('STATUS')
-            res.body.should.have.property('message')
+            res.should.have.status(400)
+            res.body.should.have.property('error')
+            res.body.error.should.have.property('message')
 
             done()
         })
