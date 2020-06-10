@@ -19,7 +19,7 @@ var serviceAccount = require("./serviceAccountKey.json");
 
 //   connect to mongo db
 mongoose.connect(
-    'mongodb+srv://travelme:travelme@cluster0-2r76h.mongodb.net/travel_me?retryWrites=true&w=majority',
+    'mongodb+srv://travelme:travelme@cluster0-2r76h.mongodb.net/testingDatabase?retryWrites=true&w=majority',
     {
         useNewUrlParser: true,
         useUnifiedTopology: true,
@@ -88,7 +88,7 @@ app.use('/getPlace',getPlaceRouter);
 app.use('/auth',authRouter);
 app.use('/myTrips',myTripRouter);
 
-cron.schedule("59 23 * * *", function() {
+cron.schedule("*/5 * * * *", function() {
     automate.automateCrawlReviews();
   },{
     scheduled:true,

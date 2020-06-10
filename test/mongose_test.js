@@ -13,7 +13,7 @@ var db = require('../api/models/mongoose');
 
 describe('connected to database',function(){
     mongoose.connect(
-        'mongodb+srv://travelme:travelme@cluster0-2r76h.mongodb.net/test?retryWrites=true&w=majority',
+        'mongodb+srv://travelme:travelme@cluster0-2r76h.mongodb.net/testingDatabase?retryWrites=true&w=majority',
         {
             useNewUrlParser: true,
             useUnifiedTopology: true,
@@ -27,7 +27,7 @@ describe('connected to database',function(){
 
 describe('CHECK FUNCTION => checkUrlInDB',function(){
     mongoose.connect(
-        'mongodb+srv://travelme:travelme@cluster0-2r76h.mongodb.net/test?retryWrites=true&w=majority',
+        'mongodb+srv://travelme:travelme@cluster0-2r76h.mongodb.net/testingDatabase?retryWrites=true&w=majority',
         {
             useNewUrlParser: true,
             useUnifiedTopology: true,
@@ -101,5 +101,3 @@ describe('CHECKFUNCTION => saveLinksToReview',function(){
         })
     })
 })
-
-kinn 
