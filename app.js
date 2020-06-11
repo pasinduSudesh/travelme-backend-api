@@ -11,11 +11,6 @@ var session = require('express-session');
 //firebase service account json file import
 var serviceAccount = require("./serviceAccountKey.json");
 
-//initialize firebase
-// admin.initializeApp({
-//     credential: admin.credential.cert(serviceAccount),
-//     databaseURL: "https://travelme-29ae1.firebaseio.com"
-//   });
 
 //   connect to mongo db
 mongoose.connect(

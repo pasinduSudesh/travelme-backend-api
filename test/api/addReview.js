@@ -7,6 +7,8 @@ chai.should();
 chai.use(chaiHttp);
 
 describe('ADD REVIEWS ', ()=>{
+
+
     it('ADD REVIES TO DATABSE',(done)=>{
         chai.request(server)
         .post('/addReview').send({name:"Kamal",place:"galle duch fort", review:"Good place"})
@@ -117,6 +119,19 @@ describe('ADD REVIEWS ', ()=>{
         .end((err,res)=>{
             console.log(res.body)
             res.should.have.status(400)
+            res.body.should.have.property('error')
+            res.body.error.should.have.property('message')
+
+            done()
+        })
+    }).timeout(120000)
+
+    it('ADD REVIES TO DATABSE WITH WRONG URL',(done)=>{
+        chai.request(server)
+        .post('/addReviewa').send({name:"Kamal",place:null, review:"Good place"})
+        .end((err,res)=>{
+            console.log(res.body)
+            res.should.have.status(404)
             res.body.should.have.property('error')
             res.body.error.should.have.property('message')
 

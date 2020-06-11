@@ -20,7 +20,7 @@ describe('CHECK GET PLACE REVIEWS', function(){
             })
     }).timeout(120000)
 
-    it('check with wrong url', function(done){
+    it('check with correct url', function(done){
         chai.request(server)
             .get('/placeReviews/ChIJbzYnQte8woARJaqqFVpKeNo')
             .end((err,resp)=>{
@@ -41,7 +41,7 @@ describe('CHECK GET PLACE REVIEWS', function(){
             })
     }).timeout(120000)
 
-    it('check with wrong url', function(done){
+    it('check with correct url', function(done){
         chai.request(server)
             .get('/placeReviews/ChIJJ7zkh3es_ToRfBitXXGg2c0')
             .end((err,resp)=>{
@@ -62,7 +62,7 @@ describe('CHECK GET PLACE REVIEWS', function(){
             })
     }).timeout(120000)
 
-    it('check with wrong url', function(done){
+    it('check with correct url', function(done){
         chai.request(server)
             .get('/placeReviews/ChIJl5yE6Jv1_DoRjhdtagikgZY')
             .end((err,resp)=>{
@@ -83,7 +83,7 @@ describe('CHECK GET PLACE REVIEWS', function(){
             })
     }).timeout(120000)
 
-    it('check with wrong url', function(done){
+    it('check with correct url', function(done){
         chai.request(server)
             .get('/placeReviews/ChIJtfdplWNf_DoRp8dlDcpuhfI')
             .end((err,resp)=>{
@@ -104,7 +104,7 @@ describe('CHECK GET PLACE REVIEWS', function(){
             })
     }).timeout(120000)
 
-    it('check with wrong url', function(done){
+    it('check with correct url', function(done){
         chai.request(server)
             .get('/placeReviews/ChIJnbBnzKUA4zoRuFeA0cQWfYQ')
             .end((err,resp)=>{
@@ -125,7 +125,7 @@ describe('CHECK GET PLACE REVIEWS', function(){
             })
     }).timeout(120000)
 
-    it('check with wrong url', function(done){
+    it('check with correct url', function(done){
         chai.request(server)
             .get('/placeReviews/ChIJQRJv0Zb1_DoRjWifejv6EvQ')
             .end((err,resp)=>{
@@ -146,7 +146,7 @@ describe('CHECK GET PLACE REVIEWS', function(){
             })
     }).timeout(120000)
 
-    it('check with wrong url', function(done){
+    it('check with correct url', function(done){
         chai.request(server)
             .get('/placeReviews/ChIJfbxYZb31_DoRVO6nFKyDpl4')
             .end((err,resp)=>{
@@ -167,7 +167,7 @@ describe('CHECK GET PLACE REVIEWS', function(){
             })
     }).timeout(120000)
 
-    it('check with wrong url', function(done){
+    it('check with correct url', function(done){
         chai.request(server)
             .get('/placeReviews/ChIJ55TqL2CK_DoRqXURrsiiGgk')
             .end((err,resp)=>{

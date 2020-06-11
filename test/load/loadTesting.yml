@@ -1,7 +1,7 @@
 config:
   target: 'https://noderestapp.azurewebsites.net'
   phases:
-    - duration: 30
+    - duration: 20
       arrivalRate: 5
   defaults:
     headers:
@@ -32,8 +32,8 @@ scenarios:
         url: "/nearestHotels"
         json: 
           place: "galle"
-          lat: "7.0"
-          lng: "80.1"
+          lat: "6.02"
+          lng: "80.21"
     - get:
         url: "/placeReviews/ChIJJ84WO7pE-zoRfCsDs6KXScM" 
     - get:
