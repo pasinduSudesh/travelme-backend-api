@@ -1,7 +1,7 @@
 config:
   target: 'https://noderestapp.azurewebsites.net'
   phases:
-    - duration: 20
+    - duration: 30
       arrivalRate: 5
   defaults:
     headers:
@@ -24,4 +24,22 @@ scenarios:
           email: "kmal@gmail.com"
     - get:
         url: "/crawlNearestPlaces/polonnaruwa"
+    - get:
+        url: "/bestPlaces"
+    - get:
+        url: "/searchHotel/galle"
+    - post:
+        url: "/nearestHotels"
+        json: 
+          place: "galle"
+          lat: "7.0"
+          lng: "80.1"
+    - get:
+        url: "/placeReviews/ChIJJ84WO7pE-zoRfCsDs6KXScM" 
+    - get:
+        url: "/getPlace/polonnaruwa vatadage" 
+    - get:
+        url: "/getPlace/singlePlace/polonnaruwa vatadage"      
+    - get:
+        url: "/myTrips/dilshan.saps@gmail.com"
 
